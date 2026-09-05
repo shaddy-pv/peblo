@@ -10,3 +10,4 @@ passlib[bcrypt]==1.7.4
 python-multipart==0.0.17
 Pillow==11.0.0
 aiofiles==24.1.0
+passlib[bcrypt]==1.7.4

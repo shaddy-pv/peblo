@@ -22,10 +22,12 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 # ── Import models so Alembic can auto-detect schema changes ──────────────────
-# All models must be imported here (or imported transitively via app.db.session)
-# so that Base.metadata knows about them.
+# ALL models must be imported before target_metadata is set.
+# Alembic autogenerate inspects Base.metadata — models only appear there
+# after their module is imported.
 from app.db.session import Base  # noqa: E402
 from app.core.config import settings  # noqa: E402
+import app.models  # noqa: E402, F401  — registers all models with Base.metadata
 
 # Override sqlalchemy.url from application settings
 config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
