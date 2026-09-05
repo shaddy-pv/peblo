@@ -4,8 +4,8 @@ Validates uploaded image byte size, format, aspect ratio, and dimensions
 against reference.json specifications with non-technical editor friendly error messages.
 """
 
-from dataclasses import dataclass
 import io
+from dataclasses import dataclass
 from typing import Tuple
 
 from PIL import Image, UnidentifiedImageError

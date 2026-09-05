@@ -5,13 +5,11 @@ Handles user authentication and token creation.
 
 from datetime import timedelta
 
-from jose import JWTError
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
 from app.core.security import create_access_token, verify_password
-from app.models.enums import UserRole
 from app.models.user import User
 from app.schemas.token import Token
 

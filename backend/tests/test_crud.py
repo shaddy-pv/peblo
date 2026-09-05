@@ -3,15 +3,15 @@ Unit and API integration tests for Phase 4: CRUD operations and business validat
 Covers shows, seasons, episodes, content_group uniqueness, and publish constraints.
 """
 
+import uuid
 from datetime import datetime, timezone
 from unittest.mock import AsyncMock, MagicMock
-import uuid
 
 import pytest
-from httpx import ASGITransport, AsyncClient
+from httpx import AsyncClient
 from pydantic import ValidationError
 
-from app.api.deps import get_current_user, get_db, require_editor
+from app.api.deps import get_db, require_editor
 from app.core.security import create_access_token
 from app.main import app
 from app.models.enums import EpisodeStatus, ShowStatus, UserRole
@@ -19,10 +19,9 @@ from app.models.episode import Episode
 from app.models.season import Season
 from app.models.show import Show
 from app.models.user import User
-from app.schemas.episode import EpisodeCreate, EpisodeUpdate
+from app.schemas.episode import EpisodeCreate
 from app.schemas.season import SeasonCreate
-from app.schemas.show import ShowCreate, ShowUpdate
-
+from app.schemas.show import ShowCreate
 
 # ── Fixtures ──────────────────────────────────────────────────────────────────
 

@@ -3,15 +3,14 @@ Season service layer.
 Handles CRUD and business logic for Seasons.
 """
 
-from typing import Sequence
 import uuid
+from typing import Sequence
 
 from fastapi import HTTPException, status
-from sqlalchemy import func, select
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from app.models.episode import Episode
 from app.models.season import Season
 from app.models.show import Show
 from app.schemas.season import SeasonCreate, SeasonUpdate

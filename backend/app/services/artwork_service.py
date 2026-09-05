@@ -3,8 +3,8 @@ Artwork service layer.
 Coordinates image validation, storage upload, and Artwork record persistence.
 """
 
-from typing import Sequence
 import uuid
+from typing import Sequence
 
 from fastapi import HTTPException, status
 from sqlalchemy import select

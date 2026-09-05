@@ -4,17 +4,13 @@ Tests content_group language variant collapsing, Season 0 trailers separation,
 section grouping, deterministic ordering, and JSON serialization.
 """
 
-from datetime import datetime, timezone
 import json
-from unittest.mock import AsyncMock, MagicMock
 import uuid
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from app.models.artwork import Artwork
 from app.models.enums import (
-    ArtworkEntityType,
-    ArtworkType,
     EpisodeStatus,
     ShowStatus,
 )

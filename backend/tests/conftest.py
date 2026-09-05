@@ -11,7 +11,6 @@ Note on database availability:
   CI always provides a PostgreSQL service container.
 """
 
-import asyncio
 import os
 from typing import AsyncGenerator
 
@@ -43,8 +42,8 @@ async def test_engine():
 
     from app.db.session import Base
 
-    TEST_DB_URL = settings.DATABASE_URL.replace("/peblo_tv", "/peblo_tv_test")
-    engine = create_async_engine(TEST_DB_URL, echo=False)
+    test_db_url = settings.DATABASE_URL.replace("/peblo_tv", "/peblo_tv_test")
+    engine = create_async_engine(test_db_url, echo=False)
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
     yield engine

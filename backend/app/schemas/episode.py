@@ -2,8 +2,8 @@
 Pydantic schemas for Episode entity.
 """
 
-from datetime import datetime
 import uuid
+from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 

@@ -3,22 +3,19 @@ Unit and API integration tests for Authentication & Authorization (Phase 3).
 Covers password hashing, JWT generation/validation, auth endpoints, and role enforcement.
 """
 
+import uuid
 from datetime import timedelta
 from unittest.mock import AsyncMock, MagicMock
-import uuid
 
 import pytest
 from fastapi import APIRouter, Depends, status
-from httpx import ASGITransport, AsyncClient
+from httpx import AsyncClient
 from jose import JWTError, jwt
 
 from app.api.deps import (
-    get_current_active_user,
-    get_current_user,
     get_db,
     require_admin,
     require_editor,
-    require_role,
 )
 from app.core.config import settings
 from app.core.security import (
@@ -31,7 +28,6 @@ from app.main import app
 from app.models.enums import UserRole
 from app.models.user import User
 from app.services.auth_service import AuthService
-
 
 # ── Security Unit Tests ───────────────────────────────────────────────────────
 

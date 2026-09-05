@@ -3,8 +3,8 @@ Episode service layer.
 Handles CRUD, content_group language variant management, and publish validation rules.
 """
 
-from typing import Sequence
 import uuid
+from typing import Sequence
 
 from fastapi import HTTPException, status
 from sqlalchemy import func, select
@@ -15,7 +15,6 @@ from app.models.artwork import Artwork
 from app.models.enums import ArtworkEntityType, EpisodeStatus
 from app.models.episode import Episode
 from app.models.season import Season
-from app.models.show import Show
 from app.schemas.episode import EpisodeCreate, EpisodeUpdate
 
 

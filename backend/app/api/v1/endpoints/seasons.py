@@ -3,8 +3,8 @@ Season management endpoints.
 CRUD operations for show seasons, including Season 0 / trailer management.
 """
 
-from typing import Optional
 import uuid
+from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession

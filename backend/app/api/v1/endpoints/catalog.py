@@ -4,7 +4,7 @@ Provides high-performance read and search access to the published catalogue.
 Strictly public (no auth required) and decoupled from administrative database mutations.
 """
 
-from fastapi import APIRouter, HTTPException, Query, Response, status
+from fastapi import APIRouter, Query, Response
 
 from app.schemas.catalogue import (
     CatalogueData,

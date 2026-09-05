@@ -29,7 +29,6 @@ import asyncio
 import json
 import shutil
 import sys
-import uuid
 from collections import defaultdict
 from pathlib import Path
 
@@ -40,24 +39,27 @@ for p in [str(_BACKEND), str(_ROOT)]:
     if p not in sys.path:
         sys.path.insert(0, p)
 
-from sqlalchemy import select, text
-from sqlalchemy.exc import IntegrityError
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy import select, text  # noqa: E402
+from sqlalchemy.exc import IntegrityError  # noqa: E402
+from sqlalchemy.ext.asyncio import (  # noqa: E402
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
+)
 
-from app.core.config import settings
-from app.models.enums import (
+from app.core.config import settings  # noqa: E402
+from app.models.artwork import Artwork  # noqa: E402
+from app.models.enums import (  # noqa: E402
     ArtworkEntityType,
     ArtworkType,
     EpisodeStatus,
     ShowStatus,
     UserRole,
 )
-from app.models.artwork import Artwork
-from app.models.episode import Episode
-from app.models.publish_run import PublishRun
-from app.models.season import Season
-from app.models.show import Show
-from app.models.user import User
+from app.models.episode import Episode  # noqa: E402
+from app.models.season import Season  # noqa: E402
+from app.models.show import Show  # noqa: E402
+from app.models.user import User  # noqa: E402
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
 BACKEND_DIR = Path(__file__).resolve().parents[2]
@@ -176,8 +178,6 @@ async def _seed_content(
     shows_data: dict[str, dict] = {}
     # seasons keyed by (slug, season_number)
     seasons_data: dict[tuple[str, int], set[str]] = defaultdict(set)  # → episode_ids
-    # rows keyed by episode_id
-    episodes_by_id: dict[str, dict] = {row["episode_id"]: row for row in seed_rows}
 
     for row in seed_rows:
         slug = row["slug"]

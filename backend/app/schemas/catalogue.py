@@ -3,9 +3,8 @@ Pydantic schemas defining the published OTT Catalogue structure.
 Guarantees a stable, documented format consumed by the viewer application.
 """
 
-from datetime import datetime
-from typing import Any
 import uuid
+from datetime import datetime
 
 from pydantic import BaseModel, Field
 

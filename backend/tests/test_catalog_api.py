@@ -15,17 +15,13 @@ Verifies:
 7. Sub-millisecond in-memory mtime cache behavior.
 """
 
-from datetime import datetime, timezone
-import json
-from pathlib import Path
-from unittest.mock import patch
 import uuid
+from datetime import datetime, timezone
+from unittest.mock import patch
 
 import pytest
 from httpx import AsyncClient
 
-from app.core.config import settings
-from app.main import app
 from app.schemas.catalogue import (
     CatalogueArtwork,
     CatalogueData,

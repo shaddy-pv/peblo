@@ -4,11 +4,11 @@ Implements pre-publish validation gates, write-then-atomic-rename temp file patt
 audit logging with PublishRun, and Cloudflare R2 / local storage synchronization.
 """
 
-from datetime import datetime, timezone
 import json
 import os
-from pathlib import Path
 import uuid
+from datetime import datetime, timezone
+from pathlib import Path
 
 from fastapi import HTTPException, status
 from sqlalchemy import select
@@ -111,7 +111,7 @@ class PublishService:
 
             # 4d. Synchronize to storage provider
             storage = get_storage()
-            storage_url = await storage.upload(
+            await storage.upload(
                 key="catalogue.json",
                 data=json_bytes,
                 content_type="application/json",

@@ -4,11 +4,9 @@ Serves the pre-published live catalogue from storage/disk to the Viewer applicat
 and provides fast, composable search (title, synopsis, category, episode title, language, section).
 """
 
-from datetime import datetime, timezone
 import json
-import os
-from pathlib import Path
 import uuid
+from pathlib import Path
 
 from fastapi import HTTPException, status
 

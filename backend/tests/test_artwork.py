@@ -3,15 +3,15 @@ Unit and API integration tests for Phase 5: Artwork Pipeline & Storage Abstracti
 Tests validation of aspect ratio, dimensions, 200KB ceiling, storage abstraction, and upload API.
 """
 
-from datetime import datetime, timezone
 import io
+import uuid
+from datetime import datetime, timezone
 from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock
-import uuid
 
-from PIL import Image
 import pytest
-from httpx import ASGITransport, AsyncClient
+from httpx import AsyncClient
+from PIL import Image
 
 from app.api.deps import get_db, require_editor
 from app.core.security import create_access_token
@@ -20,7 +20,6 @@ from app.models.artwork import Artwork
 from app.models.enums import ArtworkEntityType, ArtworkType, UserRole
 from app.models.show import Show
 from app.models.user import User
-from app.services.artwork_service import ArtworkService
 from app.services.artwork_validator import (
     ArtworkValidationError,
     ArtworkValidator,

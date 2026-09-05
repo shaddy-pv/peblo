@@ -4,9 +4,9 @@ Verifies detection of P1-P8 deliberate data flaws, blocker vs warning categoriza
 and the GET /admin/validation-report endpoint.
 """
 
+import uuid
 from datetime import datetime, timezone
 from unittest.mock import AsyncMock, MagicMock
-import uuid
 
 import pytest
 from httpx import AsyncClient
@@ -26,7 +26,7 @@ from app.models.episode import Episode
 from app.models.season import Season
 from app.models.show import Show
 from app.models.user import User
-from app.schemas.validation import IssueCategory, ValidationSeverity
+from app.schemas.validation import IssueCategory
 from app.services.validation_engine import ValidationEngine
 
 

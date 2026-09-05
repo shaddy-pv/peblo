@@ -10,17 +10,16 @@ Verifies:
    - GET /admin/catalog/publish/runs -> Editor & Admin permitted.
 """
 
-from datetime import datetime, timezone
 import json
-from pathlib import Path
-from unittest.mock import AsyncMock, MagicMock, patch
 import uuid
+from datetime import datetime, timezone
+from unittest.mock import AsyncMock, MagicMock, patch
 
-from fastapi import HTTPException
 import pytest
+from fastapi import HTTPException
 from httpx import AsyncClient
 
-from app.api.deps import get_db, require_admin, require_editor
+from app.api.deps import get_db
 from app.core.security import create_access_token
 from app.main import app
 from app.models.enums import PublishOutcome, UserRole

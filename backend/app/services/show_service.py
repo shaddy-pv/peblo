@@ -3,8 +3,8 @@ Show service layer.
 Handles CRUD and business logic for Shows.
 """
 
-from typing import Sequence
 import uuid
+from typing import Sequence
 
 from fastapi import HTTPException, status
 from sqlalchemy import func, select
@@ -12,7 +12,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.models.enums import ShowStatus
-from app.models.episode import Episode
 from app.models.season import Season
 from app.models.show import Show
 from app.schemas.show import ShowCreate, ShowUpdate

@@ -6,10 +6,8 @@ Generates an actionable Publish-Readiness report distinguishing blockers from wa
 
 from collections import defaultdict
 from datetime import datetime, timezone
-import re
-from typing import Sequence
 
-from sqlalchemy import func, select
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 

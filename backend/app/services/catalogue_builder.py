@@ -6,9 +6,7 @@ Implements content_group collapsing, Season 0 trailers extraction, and determini
 
 from collections import defaultdict
 from datetime import datetime, timezone
-import json
 from typing import Sequence
-import uuid
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession

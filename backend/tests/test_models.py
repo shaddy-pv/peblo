@@ -4,28 +4,24 @@ These tests run without requiring a live PostgreSQL instance.
 """
 
 import json
-from pathlib import Path
 import uuid
-
-import pytest
-from sqlalchemy import inspect
+from pathlib import Path
 
 from app.db.session import Base
 from app.models import (
     Artwork,
+    ArtworkEntityType,
+    ArtworkType,
     Episode,
+    EpisodeStatus,
+    PublishOutcome,
     PublishRun,
     Season,
     Show,
-    User,
-    ArtworkEntityType,
-    ArtworkType,
-    EpisodeStatus,
-    PublishOutcome,
     ShowStatus,
+    User,
     UserRole,
 )
-
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
 
