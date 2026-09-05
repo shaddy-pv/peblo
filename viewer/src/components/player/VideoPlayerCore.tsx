@@ -2,6 +2,43 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { ArtworkImage } from '../common/ArtworkImage';
 import type { CatalogueEpisode, CatalogueLanguageVariant } from '../../types';
 
+// ── Official Peblo TV YouTube Playlists & Video ID Mappings ───────────────────
+// 1. Full Episodes: https://www.youtube.com/playlist?list=PLUG63jhqdZpg_9xv8Xovh5qRU9da-vYu_
+// 2. Songs of Peblo: https://www.youtube.com/playlist?list=PLUG63jhqdZpjiQ8W-MmqU9BkhHq1umI6T
+// 3. Moti's Many Lives: https://www.youtube.com/watch?v=4Nqx6mKTGr4&list=PLUG63jhqdZpgrfh6X7izxSth2sBvNwZS0
+const YOUTUBE_VIDEO_MAP: Record<string, string> = {
+  // Moti's Many Lives
+  'motis-many-lives-s00e01': 'uLLJ9vYAeWw', // Trailer: Moti in Rajasthan
+  'motis-many-lives-s01e01': '1p7HEhdzVf4', // Episode 1: Moti in Rajasthan
+  'motis-many-lives-s01e02': 'xzZXcwVwz3s', // Episode 2: Moti in Himachal
+  'motis-many-lives-s01e03': 'LnldPitDTwU', // Episode 3: Moti in Haryana
+  // Tiny Tales By Banyan Dadi
+  'tiny-tales-banyan-dadi-s00e01': '2Fg4uuMtKj4',
+  'tiny-tales-banyan-dadi-s01e01': '2Fg4uuMtKj4', // Episode 1: Fox And Swan
+  'tiny-tales-banyan-dadi-s01e02': 'qk4ne7yJbh0', // Episode 2: Sparrow Cousins
+  'tiny-tales-banyan-dadi-s01e03': 'wBOYwcYs87g', // Episode 3: Otter and The River
+  // Songs of Peblo (Rhyme Rangers)
+  'rhyme-rangers-s01e01': '4Nqx6mKTGr4', // Intro Song
+  'rhyme-rangers-s01e02': 'ZDlcI80eAp0', // Run Hero Run
+  'rhyme-rangers-s01e03': '9JfeF9ZDZtI', // Basera Song
+  'rhyme-rangers-s01e04': 'qAxH_87WvGk', // Wherever the water goes
+  'rhyme-rangers-s01e05': 'hUK37R55IQY', // Birds of a Feather
+};
+
+const PLAYLIST_POOL = [
+  '1p7HEhdzVf4', 'xzZXcwVwz3s', 'LnldPitDTwU', '2Fg4uuMtKj4',
+  'qk4ne7yJbh0', 'wBOYwcYs87g', '4Nqx6mKTGr4', 'ZDlcI80eAp0',
+  '9JfeF9ZDZtI', 'qAxH_87WvGk', 'hUK37R55IQY', 'uLLJ9vYAeWw'
+];
+
+function extractYouTubeId(urlOrId: string): string | null {
+  if (!urlOrId) return null;
+  const trimmed = urlOrId.trim();
+  if (/^[a-zA-Z0-9_-]{11}$/.test(trimmed)) return trimmed;
+  const match = trimmed.match(/(?:v=|\/embed\/|\/watch\?v=|youtu\.be\/|\/v\/)([a-zA-Z0-9_-]{11})/);
+  return match ? match[1] : null;
+}
+
 export interface VideoPlayerCoreProps {
   showTitle: string;
   showSlug?: string;
@@ -29,6 +66,30 @@ export const VideoPlayerCore: React.FC<VideoPlayerCoreProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const languages: CatalogueLanguageVariant[] = currentEpisode.languages || [];
+
+  // YouTube streaming states
+  const [useYouTubePlayer, setUseYouTubePlayer] = useState<boolean>(true);
+  const [customVideoId, setCustomVideoId] = useState<string | null>(null);
+  const [inputUrl, setInputUrl] = useState<string>('');
+  const [showUrlInput, setShowUrlInput] = useState<boolean>(false);
+
+  // Clear custom override when active episode changes
+  const [prevContentGroup, setPrevContentGroup] = useState<string>(currentEpisode.content_group);
+  if (prevContentGroup !== currentEpisode.content_group) {
+    setPrevContentGroup(currentEpisode.content_group);
+    setCustomVideoId(null);
+  }
+
+  const resolvedYouTubeId = (() => {
+    if (customVideoId) return customVideoId;
+    if (YOUTUBE_VIDEO_MAP[currentEpisode.content_group]) {
+      return YOUTUBE_VIDEO_MAP[currentEpisode.content_group];
+    }
+    const hash = currentEpisode.content_group
+      .split('')
+      .reduce((acc, c) => acc + c.charCodeAt(0), 0);
+    return PLAYLIST_POOL[hash % PLAYLIST_POOL.length];
+  })();
 
   // Active language state
   const [selectedLanguage, setSelectedLanguage] = useState<string>(initialLanguage);
@@ -247,114 +308,139 @@ export const VideoPlayerCore: React.FC<VideoPlayerCoreProps> = ({
           overflow: 'hidden',
           cursor: showControls ? 'default' : 'none',
         }}
-        onClick={() => setIsPlaying(!isPlaying)}
+        onClick={() => !useYouTubePlayer && setIsPlaying(!isPlaying)}
       >
-        {/* Backdrop Artwork Image with Animated Breathing Zoom when playing */}
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            transform: isPlaying ? 'scale(1.04)' : 'scale(1)',
-            transition: 'transform 8s ease, opacity 0.4s ease',
-            opacity: isPlaying ? 0.38 : 0.65,
-          }}
-        >
-          <ArtworkImage
-            src={currentEpisode.artwork.thumbnail}
-            alt={displayTitle}
-            aspectRatio="16/9"
-            fallbackIcon="🎬"
-            style={{ width: '100%', height: '100%' }}
-          />
-        </div>
-
-        {/* Atmospheric Radial Gradient Light */}
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background:
-              'radial-gradient(circle at center, rgba(99, 102, 241, 0.18) 0%, rgba(11, 15, 25, 0.7) 65%, rgba(0, 0, 0, 0.95) 100%)',
-          }}
-        />
-
-        {/* Center Play/Pause Graphic Indicator */}
-        <div
-          style={{
-            position: 'relative',
-            zIndex: 2,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '0.75rem',
-            opacity: showControls || !isPlaying ? 1 : 0,
-            transition: 'opacity 0.3s ease',
-            pointerEvents: 'none',
-          }}
-        >
-          <div
-            style={{
-              width: '80px',
-              height: '80px',
-              borderRadius: 'var(--radius-full)',
-              background: isPlaying
-                ? 'linear-gradient(135deg, var(--color-primary), #4f46e5)'
-                : 'rgba(255, 255, 255, 0.22)',
-              backdropFilter: 'blur(10px)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '2.2rem',
-              color: '#fff',
-              boxShadow: isPlaying ? '0 0 35px rgba(99, 102, 241, 0.7)' : '0 8px 24px rgba(0,0,0,0.5)',
-              transform: isPlaying ? 'scale(1)' : 'scale(0.95)',
-              transition: 'all 0.2s ease',
-            }}
-          >
-            {isPlaying ? '▶' : '⏸'}
-          </div>
-
-          <div
-            style={{
-              fontSize: '0.8rem',
-              fontWeight: 700,
-              color: '#f8fafc',
-              background: 'rgba(11, 15, 25, 0.75)',
-              backdropFilter: 'blur(8px)',
-              padding: '0.25rem 0.85rem',
-              borderRadius: 'var(--radius-full)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              letterSpacing: '0.04em',
-            }}
-          >
-            {isPlaying ? `STREAMING • ${playbackRate}x` : 'PAUSED'}
-          </div>
-        </div>
-
-        {/* Simulated On-Screen Closed Captions (Subtitles) */}
-        {subtitlesEnabled && getSimulatedCaption() && (
+        {/* Real YouTube Video Stream Embed */}
+        {useYouTubePlayer ? (
           <div
             style={{
               position: 'absolute',
-              bottom: showControls ? '85px' : '40px',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              zIndex: 4,
-              backgroundColor: 'rgba(0, 0, 0, 0.85)',
-              padding: '0.4rem 1rem',
-              borderRadius: 'var(--radius-sm)',
-              color: '#fef08a',
-              fontSize: '0.95rem',
-              fontWeight: 600,
-              textAlign: 'center',
-              maxWidth: '85%',
-              border: '1px solid rgba(254, 240, 138, 0.25)',
-              boxShadow: '0 4px 16px rgba(0, 0, 0, 0.8)',
-              transition: 'bottom 0.2s ease',
+              inset: 0,
+              zIndex: 1,
+              backgroundColor: '#000',
             }}
           >
-            {getSimulatedCaption()}
+            <iframe
+              key={resolvedYouTubeId}
+              src={`https://www.youtube-nocookie.com/embed/${resolvedYouTubeId}?autoplay=1&enablejsapi=1&rel=0&modestbranding=1&playsinline=1`}
+              title={displayTitle}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+              style={{
+                width: '100%',
+                height: '100%',
+                border: 'none',
+              }}
+            />
           </div>
+        ) : (
+          <>
+            {/* Backdrop Artwork Image with Animated Breathing Zoom when playing */}
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                transform: isPlaying ? 'scale(1.04)' : 'scale(1)',
+                transition: 'transform 8s ease, opacity 0.4s ease',
+                opacity: isPlaying ? 0.38 : 0.65,
+              }}
+            >
+              <ArtworkImage
+                src={currentEpisode.artwork.thumbnail}
+                alt={displayTitle}
+                aspectRatio="16/9"
+                fallbackIcon="🎬"
+                style={{ width: '100%', height: '100%' }}
+              />
+            </div>
+
+            {/* Atmospheric Radial Gradient Light */}
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                background:
+                  'radial-gradient(circle at center, rgba(99, 102, 241, 0.18) 0%, rgba(11, 15, 25, 0.7) 65%, rgba(0, 0, 0, 0.95) 100%)',
+              }}
+            />
+
+            {/* Center Play/Pause Graphic Indicator */}
+            <div
+              style={{
+                position: 'relative',
+                zIndex: 2,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '0.75rem',
+                opacity: showControls || !isPlaying ? 1 : 0,
+                transition: 'opacity 0.3s ease',
+                pointerEvents: 'none',
+              }}
+            >
+              <div
+                style={{
+                  width: '80px',
+                  height: '80px',
+                  borderRadius: 'var(--radius-full)',
+                  background: isPlaying
+                    ? 'linear-gradient(135deg, var(--color-primary), #4f46e5)'
+                    : 'rgba(255, 255, 255, 0.22)',
+                  backdropFilter: 'blur(10px)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '2.2rem',
+                  color: '#fff',
+                  boxShadow: isPlaying ? '0 0 35px rgba(99, 102, 241, 0.7)' : '0 8px 24px rgba(0,0,0,0.5)',
+                  transform: isPlaying ? 'scale(1)' : 'scale(0.95)',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                {isPlaying ? '▶' : '⏸'}
+              </div>
+
+              <div
+                style={{
+                  fontSize: '0.8rem',
+                  fontWeight: 700,
+                  color: '#f8fafc',
+                  background: 'rgba(11, 15, 25, 0.75)',
+                  backdropFilter: 'blur(8px)',
+                  padding: '0.25rem 0.85rem',
+                  borderRadius: 'var(--radius-full)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  letterSpacing: '0.04em',
+                }}
+              >
+                {isPlaying ? `STREAMING • ${playbackRate}x` : 'PAUSED'}
+              </div>
+            </div>
+
+            {/* Simulated On-Screen Closed Captions (Subtitles) */}
+            {subtitlesEnabled && getSimulatedCaption() && (
+              <div
+                style={{
+                  position: 'absolute',
+                  bottom: showControls ? '85px' : '40px',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  zIndex: 4,
+                  backgroundColor: 'rgba(0, 0, 0, 0.85)',
+                  padding: '0.4rem 1rem',
+                  borderRadius: 'var(--radius-sm)',
+                  color: '#fef08a',
+                  fontSize: '0.95rem',
+                  fontWeight: 600,
+                  textAlign: 'center',
+                  maxWidth: '85%',
+                  border: '1px solid rgba(254, 240, 138, 0.25)',
+                }}
+              >
+                {getSimulatedCaption()}
+              </div>
+            )}
+          </>
         )}
 
         {/* Autoplay Up-Next Modal Overlay */}
@@ -466,6 +552,55 @@ export const VideoPlayerCore: React.FC<VideoPlayerCoreProps> = ({
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+            {/* YouTube Stream Mode Toggle */}
+            <button
+              type="button"
+              onClick={() => setUseYouTubePlayer(!useYouTubePlayer)}
+              style={{
+                background: useYouTubePlayer
+                  ? 'linear-gradient(135deg, #ef4444, #dc2626)'
+                  : 'rgba(255, 255, 255, 0.12)',
+                backdropFilter: 'blur(8px)',
+                border: '1px solid rgba(255, 255, 255, 0.25)',
+                color: '#fff',
+                padding: '0.35rem 0.75rem',
+                borderRadius: 'var(--radius-sm)',
+                fontSize: '0.78rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                boxShadow: useYouTubePlayer ? '0 0 12px rgba(239, 68, 68, 0.5)' : 'none',
+              }}
+              title="Toggle between real YouTube video stream and simulated OTT canvas"
+            >
+              <span>▶</span> {useYouTubePlayer ? 'YouTube: ON' : 'YouTube: OFF'}
+            </button>
+
+            {/* Custom YouTube Link Input Trigger */}
+            <button
+              type="button"
+              onClick={() => setShowUrlInput(!showUrlInput)}
+              style={{
+                background: showUrlInput ? 'var(--color-primary)' : 'rgba(255, 255, 255, 0.12)',
+                backdropFilter: 'blur(8px)',
+                border: '1px solid rgba(255, 255, 255, 0.18)',
+                color: '#fff',
+                padding: '0.35rem 0.75rem',
+                borderRadius: 'var(--radius-sm)',
+                fontSize: '0.78rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+              }}
+              title="Paste any YouTube video or playlist link to play in this player"
+            >
+              <span>🔗</span> Custom YT URL
+            </button>
+
             {/* Streaming Architecture Info Toggle */}
             <button
               type="button"
@@ -536,6 +671,78 @@ export const VideoPlayerCore: React.FC<VideoPlayerCoreProps> = ({
           </div>
         </div>
 
+        {/* Floating Custom YouTube URL Dialog Banner */}
+        {showUrlInput && (
+          <div
+            style={{
+              position: 'absolute',
+              top: '75px',
+              left: '1.5rem',
+              right: '1.5rem',
+              zIndex: 20,
+              background: 'rgba(15, 23, 42, 0.95)',
+              backdropFilter: 'blur(16px)',
+              border: '1px solid var(--color-primary)',
+              borderRadius: 'var(--radius-md)',
+              padding: '0.85rem 1.25rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.75rem',
+              boxShadow: '0 10px 30px rgba(0,0,0,0.8)',
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <span style={{ fontSize: '1.1rem' }}>📺</span>
+            <input
+              type="text"
+              value={inputUrl}
+              onChange={(e) => setInputUrl(e.target.value)}
+              placeholder="Paste any YouTube video or playlist URL (e.g. https://www.youtube.com/watch?v=...)"
+              style={{
+                flex: 1,
+                background: 'rgba(0, 0, 0, 0.5)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                borderRadius: 'var(--radius-sm)',
+                padding: '0.45rem 0.85rem',
+                color: '#fff',
+                fontSize: '0.85rem',
+                outline: 'none',
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  const id = extractYouTubeId(inputUrl);
+                  if (id) {
+                    setCustomVideoId(id);
+                    setUseYouTubePlayer(true);
+                    setShowUrlInput(false);
+                  }
+                }
+              }}
+            />
+            <button
+              type="button"
+              className="btn btn-primary btn-sm"
+              onClick={() => {
+                const id = extractYouTubeId(inputUrl);
+                if (id) {
+                  setCustomVideoId(id);
+                  setUseYouTubePlayer(true);
+                  setShowUrlInput(false);
+                }
+              }}
+            >
+              Play Video
+            </button>
+            <button
+              type="button"
+              className="btn btn-glass btn-sm"
+              onClick={() => setShowUrlInput(false)}
+            >
+              Cancel
+            </button>
+          </div>
+        )}
+
         {/* ── Bottom Controls Bar ─────────────────────────────────────────── */}
         <div
           style={{
@@ -547,7 +754,7 @@ export const VideoPlayerCore: React.FC<VideoPlayerCoreProps> = ({
             padding: '1.5rem 1.75rem 1rem 1.75rem',
             background:
               'linear-gradient(0deg, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.75) 50%, transparent 100%)',
-            display: 'flex',
+            display: useYouTubePlayer ? 'none' : 'flex',
             flexDirection: 'column',
             gap: '0.75rem',
             opacity: showControls || !isPlaying ? 1 : 0,
