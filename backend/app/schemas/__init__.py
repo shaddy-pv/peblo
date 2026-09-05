@@ -20,6 +20,7 @@ from app.schemas.episode import (
     EpisodeRead,
     EpisodeUpdate,
 )
+from app.schemas.publish import PublishResponse, PublishRunRead
 from app.schemas.season import (
     SeasonBase,
     SeasonCreate,
@@ -87,4 +88,7 @@ __all__ = [
     "CatalogueShow",
     "CatalogueStats",
     "CatalogueData",
+    # Publish
+    "PublishResponse",
+    "PublishRunRead",
 ]
