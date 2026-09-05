@@ -23,7 +23,19 @@ from app.models import (
     UserRole,
 )
 
-ROOT_DIR = Path(__file__).resolve().parents[2]
+
+def _resolve_seed_file(filename: str) -> Path:
+    candidates = [
+        Path(__file__).resolve().parents[2] / filename,
+        Path(__file__).resolve().parents[1] / "seed_data" / filename,
+        Path(__file__).resolve().parents[1] / filename,
+        Path("/app/seed_data") / filename,
+        Path("/app") / filename,
+    ]
+    for c in candidates:
+        if c.exists():
+            return c
+    return candidates[0]
 
 
 class TestModelDefinitions:
@@ -217,7 +229,7 @@ class TestSeedDataIntegrity:
     """Verify seed_shows.json and reference.json integrity and deliberate flaws."""
 
     def test_reference_json_contents(self):
-        ref_path = ROOT_DIR / "reference.json"
+        ref_path = _resolve_seed_file("reference.json")
         assert ref_path.exists()
         with open(ref_path, encoding="utf-8-sig") as f:
             ref = json.load(f)
@@ -232,7 +244,7 @@ class TestSeedDataIntegrity:
         assert "thumbnail" in ref["artwork_specs"]
 
     def test_seed_shows_structure_and_known_flaws(self):
-        seed_path = ROOT_DIR / "seed_shows.json"
+        seed_path = _resolve_seed_file("seed_shows.json")
         assert seed_path.exists()
         with open(seed_path, encoding="utf-8-sig") as f:
             seed_data = json.load(f)
