@@ -21,7 +21,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.session import Base
-from app.models.enums import EpisodeStatus
+from app.models.enums import EpisodeStatus, enum_values
 
 
 class Episode(Base):
@@ -49,7 +49,7 @@ class Episode(Base):
     duration_seconds: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
     status: Mapped[EpisodeStatus] = mapped_column(
-        Enum(EpisodeStatus, name="episode_status"),
+        Enum(EpisodeStatus, name="episode_status", values_callable=enum_values),
         nullable=False,
         default=EpisodeStatus.DRAFT,
         index=True,

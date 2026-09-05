@@ -24,7 +24,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.session import Base
-from app.models.enums import ArtworkEntityType, ArtworkType
+from app.models.enums import ArtworkEntityType, ArtworkType, enum_values
 
 
 class Artwork(Base):
@@ -36,7 +36,9 @@ class Artwork(Base):
 
     # Polymorphic entity reference
     entity_type: Mapped[ArtworkEntityType] = mapped_column(
-        Enum(ArtworkEntityType, name="artwork_entity_type"), nullable=False, index=True
+        Enum(ArtworkEntityType, name="artwork_entity_type", values_callable=enum_values),
+        nullable=False,
+        index=True,
     )
     entity_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), nullable=False, index=True
@@ -44,7 +46,7 @@ class Artwork(Base):
 
     # Artwork slot type
     artwork_type: Mapped[ArtworkType] = mapped_column(
-        Enum(ArtworkType, name="artwork_type"), nullable=False
+        Enum(ArtworkType, name="artwork_type", values_callable=enum_values), nullable=False
     )
 
     # Storage

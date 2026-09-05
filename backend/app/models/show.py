@@ -20,7 +20,7 @@ from sqlalchemy.dialects.postgresql import ARRAY, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.session import Base
-from app.models.enums import ShowStatus
+from app.models.enums import ShowStatus, enum_values
 
 
 class Show(Base):
@@ -43,7 +43,7 @@ class Show(Base):
     )
 
     status: Mapped[ShowStatus] = mapped_column(
-        Enum(ShowStatus, name="show_status"),
+        Enum(ShowStatus, name="show_status", values_callable=enum_values),
         nullable=False,
         default=ShowStatus.DRAFT,
         index=True,

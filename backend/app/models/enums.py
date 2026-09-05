@@ -38,3 +38,8 @@ class PublishOutcome(str, enum.Enum):
     RUNNING = "running"
     SUCCESS = "success"
     FAILED = "failed"
+
+
+def enum_values(enum_cls) -> list[str]:
+    """Extract enum values for SQLAlchemy Enum columns to match PostgreSQL native enum types."""
+    return [e.value for e in enum_cls]

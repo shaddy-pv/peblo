@@ -23,7 +23,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.session import Base
-from app.models.enums import PublishOutcome
+from app.models.enums import PublishOutcome, enum_values
 
 
 class PublishRun(Base):
@@ -54,7 +54,7 @@ class PublishRun(Base):
     actor_username: Mapped[str | None] = mapped_column(String(100), nullable=True)
 
     outcome: Mapped[PublishOutcome] = mapped_column(
-        Enum(PublishOutcome, name="publish_outcome"),
+        Enum(PublishOutcome, name="publish_outcome", values_callable=enum_values),
         nullable=False,
         default=PublishOutcome.RUNNING,
         index=True,
