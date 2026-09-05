@@ -18,7 +18,7 @@ This document tracks the complete 24-phase implementation roadmap for the **Pebl
 | **Phase 7** | Catalogue Generation & Transformation | Backend / Catalogue | ✅ Completed | `ed51b10` |
 | **Phase 8** | Atomic Publishing Pipeline & Admin Endpoints | Backend / Publishing | ✅ Completed | `34eb946` |
 | **Phase 9** | Catalogue Read & Composed Search API | Backend / Catalog API | ✅ Completed | `2073061` |
-| **Phase 10** | Internal CMS Foundation (Shell, Router, TanStack Query) | CMS Frontend | ✅ Completed | `pending` |
+| **Phase 10** | Internal CMS Foundation (Shell, Router, TanStack Query) | CMS Frontend | ✅ Completed | `126927d` |
 | **Phase 11** | CMS Content Management (Forms, Artwork Uploads, Lists) | CMS Frontend | ⏳ Next | — |
 | **Phase 12** | CMS Publish Workflow (Report, Run History, Permissions) | CMS Frontend | ⏳ Upcoming | — |
 | **Phase 13** | Viewer Foundation (Shell, Design System, Responsive) | Viewer Frontend | ⏳ Upcoming | — |
