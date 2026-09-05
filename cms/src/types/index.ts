@@ -46,6 +46,27 @@ export interface EpisodeLanguageVariant {
   external_id?: string | null;
 }
 
+export interface EpisodeCreate {
+  season_id: string;
+  episode_number: number;
+  title: string;
+  content_group: string;
+  language: string;
+  duration_seconds?: number | null;
+  status?: EpisodeStatus;
+  external_id?: string | null;
+}
+
+export interface EpisodeUpdate {
+  title?: string;
+  episode_number?: number;
+  duration_seconds?: number | null;
+  status?: EpisodeStatus;
+  language?: string;
+  content_group?: string;
+  external_id?: string | null;
+}
+
 export interface Episode {
   id: string;
   season_id: string;
@@ -59,8 +80,15 @@ export interface Episode {
   artwork?: {
     thumbnail?: string | null;
   };
+  has_artwork?: boolean;
   created_at: string;
   updated_at: string;
+}
+
+export interface SeasonCreate {
+  show_id: string;
+  season_number: number;
+  title?: string | null;
 }
 
 export interface Season {
@@ -71,6 +99,30 @@ export interface Season {
   is_trailers: boolean;
   episodes: Episode[];
   created_at: string;
+}
+
+export interface ShowCreate {
+  title: string;
+  slug?: string | null;
+  synopsis?: string | null;
+  section?: string | null;
+  categories?: string[];
+  status?: ShowStatus;
+  language_default?: string;
+}
+
+export interface ShowUpdate {
+  title?: string;
+  slug?: string;
+  synopsis?: string | null;
+  section?: string | null;
+  categories?: string[];
+  status?: ShowStatus;
+  language_default?: string;
+}
+
+export interface ShowDetail extends Show {
+  seasons: Season[];
 }
 
 export interface Show {
@@ -171,5 +223,7 @@ export interface PaginatedResponse<T> {
   total: number;
   page: number;
   page_size: number;
-  total_pages: number;
+  pages: number;
+  total_pages?: number;
 }
+

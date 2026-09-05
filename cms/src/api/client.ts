@@ -5,11 +5,22 @@
 
 import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios';
 import type {
+  Artwork,
+  ArtworkEntityType,
+  ArtworkType,
   AuthToken,
+  Episode,
+  EpisodeCreate,
+  EpisodeUpdate,
   PaginatedResponse,
   PublishResponse,
   PublishRun,
+  Season,
+  SeasonCreate,
   Show,
+  ShowCreate,
+  ShowDetail,
+  ShowUpdate,
   User,
   ValidationReport,
 } from '../types';
@@ -87,7 +98,7 @@ export const authApi = {
   },
 };
 
-// ── Content Endpoints ────────────────────────────────────────────────────────
+// ── Content Endpoints: Shows ────────────────────────────────────────────────
 export const showsApi = {
   getShows: async (params?: {
     page?: number;
@@ -95,6 +106,7 @@ export const showsApi = {
     section?: string;
     status?: string;
     search?: string;
+    category?: string;
   }): Promise<PaginatedResponse<Show>> => {
     const res = await apiClient.get<PaginatedResponse<Show>>('/shows', { params });
     return res.data;
@@ -102,6 +114,100 @@ export const showsApi = {
   getShow: async (id: string): Promise<Show> => {
     const res = await apiClient.get<Show>(`/shows/${id}`);
     return res.data;
+  },
+  getShowDetail: async (id: string): Promise<ShowDetail> => {
+    const res = await apiClient.get<ShowDetail>(`/shows/${id}`);
+    return res.data;
+  },
+  createShow: async (data: ShowCreate): Promise<Show> => {
+    const res = await apiClient.post<Show>('/shows', data);
+    return res.data;
+  },
+  updateShow: async (id: string, data: ShowUpdate): Promise<Show> => {
+    const res = await apiClient.patch<Show>(`/shows/${id}`, data);
+    return res.data;
+  },
+  deleteShow: async (id: string): Promise<void> => {
+    await apiClient.delete(`/shows/${id}`);
+  },
+};
+
+// ── Content Endpoints: Seasons ──────────────────────────────────────────────
+export const seasonsApi = {
+  getSeasonsForShow: async (showId: string): Promise<Season[]> => {
+    const res = await apiClient.get<Season[]>('/seasons', { params: { show_id: showId } });
+    return res.data;
+  },
+  createSeason: async (data: SeasonCreate): Promise<Season> => {
+    const res = await apiClient.post<Season>('/seasons', data);
+    return res.data;
+  },
+  deleteSeason: async (id: string): Promise<void> => {
+    await apiClient.delete(`/seasons/${id}`);
+  },
+};
+
+
+// ── Content Endpoints: Episodes ─────────────────────────────────────────────
+export const episodesApi = {
+  getEpisodes: async (params?: {
+    page?: number;
+    page_size?: number;
+    show_id?: string;
+    season_id?: string;
+    search?: string;
+    status?: string;
+    language?: string;
+    content_group?: string;
+  }): Promise<PaginatedResponse<Episode>> => {
+    const res = await apiClient.get<PaginatedResponse<Episode>>('/episodes', { params });
+    return res.data;
+  },
+  createEpisode: async (data: EpisodeCreate): Promise<Episode> => {
+    const res = await apiClient.post<Episode>('/episodes', data);
+    return res.data;
+  },
+  updateEpisode: async (id: string, data: EpisodeUpdate): Promise<Episode> => {
+    const res = await apiClient.patch<Episode>(`/episodes/${id}`, data);
+    return res.data;
+  },
+  deleteEpisode: async (id: string): Promise<void> => {
+    await apiClient.delete(`/episodes/${id}`);
+  },
+};
+
+// ── Artwork Upload & Management Endpoints ────────────────────────────────────
+export const artworkApi = {
+  upload: async (
+    entityType: ArtworkEntityType,
+    entityId: string,
+    artworkType: ArtworkType,
+    file: File
+  ): Promise<Artwork> => {
+    const formData = new FormData();
+    formData.append('entity_type', entityType);
+    formData.append('entity_id', entityId);
+    formData.append('artwork_type', artworkType);
+    formData.append('file', file);
+
+    const res = await apiClient.post<Artwork>('/artwork/upload', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return res.data;
+  },
+  getForEntity: async (
+    entityType: ArtworkEntityType,
+    entityId: string
+  ): Promise<Artwork[]> => {
+    const res = await apiClient.get<Artwork[]>(`/artwork/${entityType}/${entityId}`);
+    return res.data;
+  },
+  delete: async (
+    entityType: ArtworkEntityType,
+    entityId: string,
+    artworkType: ArtworkType
+  ): Promise<void> => {
+    await apiClient.delete(`/artwork/${entityType}/${entityId}/${artworkType}`);
   },
 };
 
