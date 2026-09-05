@@ -8,6 +8,7 @@ from app.services.auth_service import AuthService
 from app.services.episode_service import EpisodeService
 from app.services.season_service import SeasonService
 from app.services.show_service import ShowService
+from app.services.validation_engine import ValidationEngine
 
 __all__ = [
     "AuthService",
@@ -17,4 +18,5 @@ __all__ = [
     "ArtworkService",
     "ArtworkValidator",
     "ArtworkValidationError",
+    "ValidationEngine",
 ]

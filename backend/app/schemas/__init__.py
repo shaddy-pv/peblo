@@ -26,6 +26,13 @@ from app.schemas.show import (
 )
 from app.schemas.token import Token, TokenPayload
 from app.schemas.user import UserBase, UserCreate, UserLogin, UserRead
+from app.schemas.validation import (
+    IssueCategory,
+    ValidationIssue,
+    ValidationReport,
+    ValidationSeverity,
+    ValidationSummary,
+)
 
 __all__ = [
     # Common
@@ -57,4 +64,10 @@ __all__ = [
     # Artwork
     "ArtworkRead",
     "EntityArtworkSummary",
+    # Validation
+    "ValidationSeverity",
+    "IssueCategory",
+    "ValidationIssue",
+    "ValidationSummary",
+    "ValidationReport",
 ]
