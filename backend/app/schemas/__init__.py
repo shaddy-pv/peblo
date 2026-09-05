@@ -2,6 +2,7 @@
 Pydantic schemas registry.
 """
 
+from app.schemas.artwork import ArtworkRead, EntityArtworkSummary
 from app.schemas.common import PaginatedResponse
 from app.schemas.episode import (
     EpisodeBase,
@@ -53,4 +54,7 @@ __all__ = [
     "EpisodeRead",
     "EpisodeGroupedVariant",
     "EpisodeUpdate",
+    # Artwork
+    "ArtworkRead",
+    "EntityArtworkSummary",
 ]

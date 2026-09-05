@@ -49,9 +49,12 @@ Thumbs.db
 .docker/
 
 # Storage (local dev artwork uploads)
+storage/
 backend/storage/
 
 # Catalogue output (generated — not committed)
+catalogue/
+backend/catalogue/
 backend/catalogue/catalogue.json
 backend/catalogue/catalogue_tmp_*.json
 
