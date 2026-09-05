@@ -22,8 +22,8 @@ This document tracks the complete 24-phase implementation roadmap for the **Pebl
 | **Phase 11** | CMS Content Management (Forms, Artwork Uploads, Lists) | CMS Frontend | ✅ Completed | `0fadf72` |
 | **Phase 12** | CMS Publish Workflow (Report, Run History, Permissions) | CMS Frontend | ✅ Completed | `9901f37` |
 | **Phase 13** | Viewer Foundation (Shell, Design System, Responsive) | Viewer Frontend | ✅ Completed | `53a50c8` |
-| **Phase 14** | Viewer Home (Hero Banner, Section Rows, Posters) | Viewer Frontend | ⏳ Next | — |
-| **Phase 15** | Viewer Search & Filter Experience | Viewer Frontend | ⏳ Upcoming | — |
+| **Phase 14** | Viewer Home (Hero Banner, Section Rows, Posters) | Viewer Frontend | ✅ Completed | `4df0ce0` |
+| **Phase 15** | Viewer Search & Filter Experience | Viewer Frontend | ⏳ Next | — |
 | **Phase 16** | Viewer Show Details (Language Selector, Trailers, Seasons) | Viewer Frontend | ⏳ Upcoming | — |
 | **Phase 17** | Player Experience (Graceful Stub / Embed) | Viewer Frontend | ⏳ Upcoming | — |
 | **Phase 18** | UI/UX Polish (Accessibility, Animations, Loading Skeletons) | Full Stack UI | ⏳ Upcoming | — |
@@ -100,6 +100,8 @@ This document tracks the complete 24-phase implementation roadmap for the **Pebl
 
 ### PHASE 14 — VIEWER HOME
 - **Scope**: Netflix-style children's OTT homepage: featured hero with banner artwork, horizontal scrolling content rows grouped by section, poster artwork cards, smooth transitions, loading skeletons.
+- **Status**: Completed (`4df0ce0`).
+
 
 ### PHASE 15 — VIEWER SEARCH & FILTERS
 - **Scope**: Search bar with debounced queries, category filter pills, language filter toggles, live filtered grid, and friendly empty states.
