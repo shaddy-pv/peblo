@@ -1,36 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { ArtworkImage } from '../common/ArtworkImage';
-import { getEpisodeThumbnail } from '../../utils/artwork';
+import { getEpisodeThumbnail, resolveYouTubeVideoId } from '../../utils/artwork';
 import type { CatalogueEpisode, CatalogueLanguageVariant } from '../../types';
-
-// ── Official Peblo TV YouTube Playlists & Video ID Mappings ───────────────────
-// 1. Full Episodes: https://www.youtube.com/playlist?list=PLUG63jhqdZpg_9xv8Xovh5qRU9da-vYu_
-// 2. Songs of Peblo: https://www.youtube.com/playlist?list=PLUG63jhqdZpjiQ8W-MmqU9BkhHq1umI6T
-// 3. Moti's Many Lives: https://www.youtube.com/watch?v=4Nqx6mKTGr4&list=PLUG63jhqdZpgrfh6X7izxSth2sBvNwZS0
-const YOUTUBE_VIDEO_MAP: Record<string, string> = {
-  // Moti's Many Lives
-  'motis-many-lives-s00e01': 'uLLJ9vYAeWw', // Trailer: Moti in Rajasthan
-  'motis-many-lives-s01e01': '1p7HEhdzVf4', // Episode 1: Moti in Rajasthan
-  'motis-many-lives-s01e02': 'xzZXcwVwz3s', // Episode 2: Moti in Himachal
-  'motis-many-lives-s01e03': 'LnldPitDTwU', // Episode 3: Moti in Haryana
-  // Tiny Tales By Banyan Dadi
-  'tiny-tales-banyan-dadi-s00e01': '2Fg4uuMtKj4',
-  'tiny-tales-banyan-dadi-s01e01': '2Fg4uuMtKj4', // Episode 1: Fox And Swan
-  'tiny-tales-banyan-dadi-s01e02': 'qk4ne7yJbh0', // Episode 2: Sparrow Cousins
-  'tiny-tales-banyan-dadi-s01e03': 'wBOYwcYs87g', // Episode 3: Otter and The River
-  // Songs of Peblo (Rhyme Rangers)
-  'rhyme-rangers-s01e01': '4Nqx6mKTGr4', // Intro Song
-  'rhyme-rangers-s01e02': 'ZDlcI80eAp0', // Run Hero Run
-  'rhyme-rangers-s01e03': '9JfeF9ZDZtI', // Basera Song
-  'rhyme-rangers-s01e04': 'qAxH_87WvGk', // Wherever the water goes
-  'rhyme-rangers-s01e05': 'hUK37R55IQY', // Birds of a Feather
-};
-
-const PLAYLIST_POOL = [
-  '1p7HEhdzVf4', 'xzZXcwVwz3s', 'LnldPitDTwU', '2Fg4uuMtKj4',
-  'qk4ne7yJbh0', 'wBOYwcYs87g', '4Nqx6mKTGr4', 'ZDlcI80eAp0',
-  '9JfeF9ZDZtI', 'qAxH_87WvGk', 'hUK37R55IQY', 'uLLJ9vYAeWw'
-];
 
 function extractYouTubeId(urlOrId: string): string | null {
   if (!urlOrId) return null;
@@ -56,6 +27,7 @@ export interface VideoPlayerCoreProps {
 
 export const VideoPlayerCore: React.FC<VideoPlayerCoreProps> = ({
   showTitle,
+  showSlug,
   currentEpisode,
   seasonNumber = 1,
   allSeasonEpisodes = [],
@@ -83,13 +55,7 @@ export const VideoPlayerCore: React.FC<VideoPlayerCoreProps> = ({
 
   const resolvedYouTubeId = (() => {
     if (customVideoId) return customVideoId;
-    if (YOUTUBE_VIDEO_MAP[currentEpisode.content_group]) {
-      return YOUTUBE_VIDEO_MAP[currentEpisode.content_group];
-    }
-    const hash = currentEpisode.content_group
-      .split('')
-      .reduce((acc, c) => acc + c.charCodeAt(0), 0);
-    return PLAYLIST_POOL[hash % PLAYLIST_POOL.length];
+    return resolveYouTubeVideoId(currentEpisode.content_group, showSlug);
   })();
 
   // Active language state

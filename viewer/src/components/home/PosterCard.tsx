@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArtworkImage } from '../common/ArtworkImage';
+import { getShowPoster } from '../../utils/artwork';
 import type { CatalogueShow } from '../../types';
 
 interface PosterCardProps {
@@ -47,7 +48,7 @@ export const PosterCard: React.FC<PosterCardProps> = ({ show }) => {
         }}
       >
         <ArtworkImage
-          src={show.artwork.poster}
+          src={getShowPoster(show.slug, show.artwork.poster)}
           alt={show.title}
           aspectRatio="2/3"
           fallbackIcon="🎬"

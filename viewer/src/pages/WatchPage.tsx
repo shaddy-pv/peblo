@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { catalogApi, extractErrorMessage } from '../api/client';
 import { VideoPlayerCore } from '../components/player/VideoPlayerCore';
 import { ArtworkImage } from '../components/common/ArtworkImage';
+import { getEpisodeThumbnail } from '../utils/artwork';
 import { EmptyState } from '../components/common/EmptyState';
 import type { CatalogueEpisode, CatalogueShow } from '../types';
 
@@ -341,7 +342,7 @@ export const WatchPage: React.FC = () => {
                     }}
                   >
                     <ArtworkImage
-                      src={ep.artwork.thumbnail}
+                      src={getEpisodeThumbnail(ep.content_group, ep.artwork.thumbnail)}
                       alt={ep.title}
                       aspectRatio="16/9"
                       fallbackIcon="🎬"

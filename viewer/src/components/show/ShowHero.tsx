@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArtworkImage } from '../common/ArtworkImage';
+import { getShowBanner } from '../../utils/artwork';
 import type { CatalogueShow } from '../../types';
 
 interface ShowHeroProps {
@@ -43,7 +44,7 @@ export const ShowHero: React.FC<ShowHeroProps> = ({
       {/* 16:9 Banner Artwork Background */}
       <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
         <ArtworkImage
-          src={show.artwork.banner}
+          src={getShowBanner(show.slug, show.artwork.banner)}
           alt={show.title}
           aspectRatio="16/9"
           fallbackIcon="🎬"

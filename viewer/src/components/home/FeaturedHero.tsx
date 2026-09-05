@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArtworkImage } from '../common/ArtworkImage';
+import { getShowBanner } from '../../utils/artwork';
 import type { CatalogueShow } from '../../types';
 
 interface FeaturedHeroProps {
@@ -55,7 +56,7 @@ export const FeaturedHero: React.FC<FeaturedHeroProps> = ({ featuredShows }) => 
       >
         <ArtworkImage
           key={currentShow.id}
-          src={currentShow.artwork.banner}
+          src={getShowBanner(currentShow.slug, currentShow.artwork.banner)}
           alt={currentShow.title}
           aspectRatio="16/9"
           fallbackIcon="🎬"
