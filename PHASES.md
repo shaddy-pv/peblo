@@ -19,8 +19,8 @@ This document tracks the complete 24-phase implementation roadmap for the **Pebl
 | **Phase 8** | Atomic Publishing Pipeline & Admin Endpoints | Backend / Publishing | ✅ Completed | `34eb946` |
 | **Phase 9** | Catalogue Read & Composed Search API | Backend / Catalog API | ✅ Completed | `2073061` |
 | **Phase 10** | Internal CMS Foundation (Shell, Router, TanStack Query) | CMS Frontend | ✅ Completed | `126927d` |
-| **Phase 11** | CMS Content Management (Forms, Artwork Uploads, Lists) | CMS Frontend | ⏳ Next | — |
-| **Phase 12** | CMS Publish Workflow (Report, Run History, Permissions) | CMS Frontend | ⏳ Upcoming | — |
+| **Phase 11** | CMS Content Management (Forms, Artwork Uploads, Lists) | CMS Frontend | ✅ Completed | `0fadf72` |
+| **Phase 12** | CMS Publish Workflow (Report, Run History, Permissions) | CMS Frontend | ⏳ Next | — |
 | **Phase 13** | Viewer Foundation (Shell, Design System, Responsive) | Viewer Frontend | ⏳ Upcoming | — |
 | **Phase 14** | Viewer Home (Hero Banner, Section Rows, Posters) | Viewer Frontend | ⏳ Upcoming | — |
 | **Phase 15** | Viewer Search & Filter Experience | Viewer Frontend | ⏳ Upcoming | — |
@@ -85,6 +85,8 @@ This document tracks the complete 24-phase implementation roadmap for the **Pebl
 
 ### PHASE 11 — CMS CONTENT MANAGEMENT
 - **Scope**: Show and episode list with search/filters, create/edit modal forms, 3 labelled artwork upload slots (poster, banner, thumbnail) with live dimensions, aspect ratio validation, live preview, and human-readable error display.
+- **Status**: Completed (`0fadf72`).
+
 
 ### PHASE 12 — CMS PUBLISHING
 - **Scope**: Publish dashboard with real-time publish-readiness validation report, disabled publish button with explicit reason badges when blocked, Admin publish action, run history with audit metrics and status badges.
