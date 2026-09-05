@@ -38,9 +38,13 @@ export const WatchPage: React.FC = () => {
     enabled: !showSlug,
   });
 
-  // Locate the show if showSlug was omitted
+  // Verify show actually contains this contentGroup; otherwise search all shows
+  const showContainsContent = show?.seasons?.some((s) =>
+    s.episodes?.some((ep) => ep.content_group === contentGroup)
+  ) || show?.trailers?.some((tr) => tr.content_group === contentGroup);
+
   const activeShow: CatalogueShow | undefined =
-    show ||
+    (showContainsContent ? show : undefined) ||
     (catalogue
       ? Object.values(catalogue.sections)
           .flat()

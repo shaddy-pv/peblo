@@ -473,164 +473,153 @@ export const VideoPlayerCore: React.FC<VideoPlayerCoreProps> = ({
           </div>
         )}
 
-        {/* ── Top Header Overlay (Title & Quick Actions) ──────────────────── */}
+        {/* ── Sleek Glassmorphism Top Control Bar ─────────────────────────── */}
         <div
+          className="player-top-bar"
           style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            zIndex: 5,
-            padding: '1.25rem 1.75rem',
-            background:
-              'linear-gradient(180deg, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.4) 60%, transparent 100%)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            opacity: showControls || !isPlaying ? 1 : 0,
-            transition: 'opacity 0.25s ease',
+            opacity: showControls || !isPlaying || useYouTubePlayer || showUrlInput || showArchitectureInfo ? 1 : 0.4,
+            pointerEvents: 'auto',
+            transform: 'translateY(0)',
           }}
           onClick={(e) => e.stopPropagation()}
         >
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.2rem' }}>
-              <span className="badge badge-primary" style={{ fontSize: '0.7rem', fontWeight: 700 }}>
-                S{seasonNumber} : E{currentEpisode.episode_number}
-              </span>
-              <span style={{ fontSize: '0.8rem', color: '#cbd5e1', fontWeight: 600 }}>
-                {showTitle}
-              </span>
+          {/* Left: Show & Episode Meta */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.65rem',
+              minWidth: 0,
+              flex: 1,
+            }}
+          >
+            <span
+              style={{
+                fontSize: '0.72rem',
+                fontWeight: 800,
+                color: '#fff',
+                background: 'linear-gradient(135deg, var(--color-primary), #4f46e5)',
+                padding: '0.2rem 0.6rem',
+                borderRadius: 'var(--radius-full)',
+                flexShrink: 0,
+                letterSpacing: '0.04em',
+              }}
+            >
+              S{seasonNumber}:E{currentEpisode.episode_number}
+            </span>
+
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.45rem',
+                minWidth: 0,
+                overflow: 'hidden',
+                whiteSpace: 'nowrap',
+                textOverflow: 'ellipsis',
+              }}
+            >
               <span
+                className="player-meta-title"
                 style={{
-                  fontSize: '0.72rem',
-                  color: 'var(--color-emerald)',
-                  background: 'var(--color-emerald-subtle)',
-                  padding: '0.15rem 0.5rem',
-                  borderRadius: 'var(--radius-full)',
-                  fontWeight: 600,
+                  fontSize: '0.85rem',
+                  fontWeight: 700,
+                  color: '#ffffff',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  flexShrink: 0,
                 }}
               >
-                🛡️ Safe Kids Stream
+                {showTitle}
+              </span>
+              <span style={{ color: 'rgba(255, 255, 255, 0.35)', fontSize: '0.8rem' }}>•</span>
+              <span
+                style={{
+                  fontSize: '0.85rem',
+                  fontWeight: 600,
+                  color: '#cbd5e1',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+              >
+                {displayTitle}
               </span>
             </div>
-            <h3 style={{ fontSize: '1.2rem', color: '#ffffff', fontWeight: 800 }}>
-              {displayTitle}
-            </h3>
+
+            <span
+              style={{
+                fontSize: '0.68rem',
+                fontWeight: 700,
+                color: '#34d399',
+                background: 'rgba(16, 185, 129, 0.15)',
+                border: '1px solid rgba(52, 211, 153, 0.3)',
+                padding: '0.15rem 0.5rem',
+                borderRadius: 'var(--radius-full)',
+                flexShrink: 0,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.25rem',
+              }}
+            >
+              <span>🛡️</span> <span className="player-btn-label">Safe Kids</span>
+            </span>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-            {/* YouTube Stream Mode Toggle */}
+          {/* Right: Consolidated Action Toolbar */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', flexShrink: 0 }}>
+            {/* Stream Mode Switcher */}
             <button
               type="button"
+              className={`player-action-btn ${useYouTubePlayer ? 'active' : ''}`}
               onClick={() => setUseYouTubePlayer(!useYouTubePlayer)}
-              style={{
-                background: useYouTubePlayer
-                  ? 'linear-gradient(135deg, #ef4444, #dc2626)'
-                  : 'rgba(255, 255, 255, 0.12)',
-                backdropFilter: 'blur(8px)',
-                border: '1px solid rgba(255, 255, 255, 0.25)',
-                color: '#fff',
-                padding: '0.35rem 0.75rem',
-                borderRadius: 'var(--radius-sm)',
-                fontSize: '0.78rem',
-                fontWeight: 700,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.4rem',
-                boxShadow: useYouTubePlayer ? '0 0 12px rgba(239, 68, 68, 0.5)' : 'none',
-              }}
-              title="Toggle between real YouTube video stream and simulated OTT canvas"
+              title="Toggle between real YouTube stream and simulated OTT canvas"
             >
-              <span>▶</span> {useYouTubePlayer ? 'YouTube: ON' : 'YouTube: OFF'}
+              <span style={{ color: useYouTubePlayer ? '#ef4444' : '#94a3b8' }}>▶</span>
+              <span className="player-btn-label">{useYouTubePlayer ? 'YouTube' : 'Native'}</span>
             </button>
 
-            {/* Custom YouTube Link Input Trigger */}
+            {/* Custom URL Popover Trigger */}
             <button
               type="button"
+              className={`player-action-btn ${showUrlInput ? 'active' : ''}`}
               onClick={() => setShowUrlInput(!showUrlInput)}
-              style={{
-                background: showUrlInput ? 'var(--color-primary)' : 'rgba(255, 255, 255, 0.12)',
-                backdropFilter: 'blur(8px)',
-                border: '1px solid rgba(255, 255, 255, 0.18)',
-                color: '#fff',
-                padding: '0.35rem 0.75rem',
-                borderRadius: 'var(--radius-sm)',
-                fontSize: '0.78rem',
-                fontWeight: 700,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.4rem',
-              }}
-              title="Paste any YouTube video or playlist link to play in this player"
+              title="Paste custom YouTube video URL"
             >
-              <span>🔗</span> Custom YT URL
+              <span>🔗</span>
+              <span className="player-btn-label">URL</span>
             </button>
 
-            {/* Streaming Architecture Info Toggle */}
+            {/* Architecture / Debug Specs Modal Trigger */}
             <button
               type="button"
+              className={`player-action-btn ${showArchitectureInfo ? 'active' : ''}`}
               onClick={() => setShowArchitectureInfo(!showArchitectureInfo)}
-              style={{
-                background: showArchitectureInfo ? 'var(--color-primary)' : 'rgba(255, 255, 255, 0.12)',
-                backdropFilter: 'blur(8px)',
-                border: '1px solid rgba(255, 255, 255, 0.18)',
-                color: '#fff',
-                padding: '0.35rem 0.75rem',
-                borderRadius: 'var(--radius-sm)',
-                fontSize: '0.78rem',
-                fontWeight: 700,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.4rem',
-              }}
-              title="View Media Streaming Architecture & Protocol Specs"
+              title="Streaming Architecture Specs"
             >
-              <span>📡</span> Architecture Specs
+              <span>ℹ️</span>
+              <span className="player-btn-label">Specs</span>
             </button>
 
-            {/* Cinema Mode Toggle (if callback provided) */}
+            {/* Cinema Mode Toggle */}
             {onToggleCinemaMode && (
               <button
                 type="button"
+                className="player-action-btn"
                 onClick={onToggleCinemaMode}
-                style={{
-                  background: 'rgba(255, 255, 255, 0.12)',
-                  backdropFilter: 'blur(8px)',
-                  border: '1px solid rgba(255, 255, 255, 0.18)',
-                  color: '#fff',
-                  padding: '0.35rem 0.75rem',
-                  borderRadius: 'var(--radius-sm)',
-                  fontSize: '0.78rem',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                }}
+                title={isCinemaMode ? 'Switch to standard view' : 'Switch to full cinema page'}
               >
-                {isCinemaMode ? '🗗 Standard View' : '🗖 Cinema Mode'}
+                <span>{isCinemaMode ? '🗗' : '🗖'}</span>
+                <span className="player-btn-label">{isCinemaMode ? 'Standard' : 'Cinema'}</span>
               </button>
             )}
 
-            {/* Close Button (if in modal) */}
+            {/* Close Button */}
             {onClose && (
               <button
                 type="button"
+                className="player-close-btn"
                 onClick={onClose}
                 aria-label="Close video player"
-                style={{
-                  width: '38px',
-                  height: '38px',
-                  borderRadius: 'var(--radius-full)',
-                  background: 'rgba(255, 255, 255, 0.12)',
-                  color: '#fff',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '1.2rem',
-                  cursor: 'pointer',
-                  border: '1px solid rgba(255, 255, 255, 0.18)',
-                }}
               >
                 ✕
               </button>
@@ -638,75 +627,98 @@ export const VideoPlayerCore: React.FC<VideoPlayerCoreProps> = ({
           </div>
         </div>
 
-        {/* Floating Custom YouTube URL Dialog Banner */}
+        {/* Floating Custom YouTube URL Dialog Popover */}
         {showUrlInput && (
           <div
             style={{
               position: 'absolute',
-              top: '75px',
-              left: '1.5rem',
-              right: '1.5rem',
-              zIndex: 20,
-              background: 'rgba(15, 23, 42, 0.95)',
-              backdropFilter: 'blur(16px)',
-              border: '1px solid var(--color-primary)',
+              top: '4.25rem',
+              right: '1.25rem',
+              zIndex: 30,
+              maxWidth: '460px',
+              width: 'calc(100% - 2.5rem)',
+              background: 'rgba(15, 23, 42, 0.96)',
+              backdropFilter: 'blur(20px)',
+              border: '1px solid rgba(99, 102, 241, 0.5)',
               borderRadius: 'var(--radius-md)',
-              padding: '0.85rem 1.25rem',
+              padding: '0.85rem 1.15rem',
               display: 'flex',
-              alignItems: 'center',
-              gap: '0.75rem',
-              boxShadow: '0 10px 30px rgba(0,0,0,0.8)',
+              flexDirection: 'column',
+              gap: '0.65rem',
+              boxShadow: '0 16px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(99, 102, 241, 0.25)',
+              animation: 'fadeIn 0.2s ease-out',
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <span style={{ fontSize: '1.1rem' }}>📺</span>
-            <input
-              type="text"
-              value={inputUrl}
-              onChange={(e) => setInputUrl(e.target.value)}
-              placeholder="Paste any YouTube video or playlist URL (e.g. https://www.youtube.com/watch?v=...)"
-              style={{
-                flex: 1,
-                background: 'rgba(0, 0, 0, 0.5)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: 'var(--radius-sm)',
-                padding: '0.45rem 0.85rem',
-                color: '#fff',
-                fontSize: '0.85rem',
-                outline: 'none',
-              }}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span style={{ fontSize: '0.78rem', fontWeight: 800, color: '#e2e8f0', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <span>🔗</span> Custom YouTube Stream URL
+              </span>
+              <button
+                type="button"
+                onClick={() => setShowUrlInput(false)}
+                style={{ color: '#94a3b8', background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.85rem' }}
+              >
+                ✕
+              </button>
+            </div>
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <input
+                type="text"
+                value={inputUrl}
+                onChange={(e) => setInputUrl(e.target.value)}
+                placeholder="Paste YouTube link (https://youtube.com/watch?v=...)"
+                style={{
+                  flex: 1,
+                  background: 'rgba(0, 0, 0, 0.6)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: 'var(--radius-sm)',
+                  padding: '0.45rem 0.75rem',
+                  color: '#fff',
+                  fontSize: '0.8rem',
+                  outline: 'none',
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    const id = extractYouTubeId(inputUrl);
+                    if (id) {
+                      setCustomVideoId(id);
+                      setUseYouTubePlayer(true);
+                      setShowUrlInput(false);
+                    }
+                  }
+                }}
+              />
+              <button
+                type="button"
+                className="btn btn-primary btn-sm"
+                style={{ padding: '0.45rem 0.85rem', fontSize: '0.78rem' }}
+                onClick={() => {
                   const id = extractYouTubeId(inputUrl);
                   if (id) {
                     setCustomVideoId(id);
                     setUseYouTubePlayer(true);
                     setShowUrlInput(false);
                   }
-                }
-              }}
-            />
-            <button
-              type="button"
-              className="btn btn-primary btn-sm"
-              onClick={() => {
-                const id = extractYouTubeId(inputUrl);
-                if (id) {
-                  setCustomVideoId(id);
-                  setUseYouTubePlayer(true);
-                  setShowUrlInput(false);
-                }
-              }}
-            >
-              Play Video
-            </button>
-            <button
-              type="button"
-              className="btn btn-glass btn-sm"
-              onClick={() => setShowUrlInput(false)}
-            >
-              Cancel
-            </button>
+                }}
+              >
+                Play
+              </button>
+              {customVideoId && (
+                <button
+                  type="button"
+                  className="btn btn-glass btn-sm"
+                  style={{ padding: '0.45rem 0.75rem', fontSize: '0.75rem' }}
+                  onClick={() => {
+                    setCustomVideoId(null);
+                    setInputUrl('');
+                    setShowUrlInput(false);
+                  }}
+                >
+                  Reset
+                </button>
+              )}
+            </div>
           </div>
         )}
 
