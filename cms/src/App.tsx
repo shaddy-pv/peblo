@@ -1,39 +1,48 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import { ProtectedRoute } from './components/layout/ProtectedRoute';
+import { AppLayout } from './components/layout/AppLayout';
+import { Login } from './pages/Login';
+import { ShowsOverview } from './pages/ShowsOverview';
+import { PublishCenter } from './pages/PublishCenter';
+import { ValidationView } from './pages/ValidationView';
+import { Unauthorized } from './pages/Unauthorized';
+import { NotFound } from './pages/NotFound';
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60, // 1 minute
+      staleTime: 1000 * 30, // 30 seconds
       retry: 1,
+      refetchOnWindowFocus: false,
     },
   },
-})
-
-// ── Placeholder pages (replaced in Phase 10+) ────────────────────────────────
-function NotFound() {
-  return (
-    <div style={{ padding: '2rem', fontFamily: 'system-ui' }}>
-      <h1>Peblo CMS</h1>
-      <p>CMS foundation ready. Full implementation begins Phase 10.</p>
-      <p>
-        Backend health:{' '}
-        <a href="/api/v1/health" target="_blank" rel="noreferrer">
-          /api/v1/health
-        </a>
-      </p>
-    </div>
-  )
-}
+});
 
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            {/* Public Route */}
+            <Route path="/login" element={<Login />} />
+
+            {/* Protected Routes */}
+            <Route element={<ProtectedRoute />}>
+              <Route element={<AppLayout />}>
+                <Route path="/" element={<Navigate to="/shows" replace />} />
+                <Route path="/shows" element={<ShowsOverview />} />
+                <Route path="/publish" element={<PublishCenter />} />
+                <Route path="/validation" element={<ValidationView />} />
+                <Route path="/unauthorized" element={<Unauthorized />} />
+                <Route path="*" element={<NotFound />} />
+              </Route>
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
     </QueryClientProvider>
-  )
+  );
 }
