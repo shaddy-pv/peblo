@@ -23,9 +23,9 @@ This document tracks the complete 24-phase implementation roadmap for the **Pebl
 | **Phase 12** | CMS Publish Workflow (Report, Run History, Permissions) | CMS Frontend | ✅ Completed | `9901f37` |
 | **Phase 13** | Viewer Foundation (Shell, Design System, Responsive) | Viewer Frontend | ✅ Completed | `53a50c8` |
 | **Phase 14** | Viewer Home (Hero Banner, Section Rows, Posters) | Viewer Frontend | ✅ Completed | `4df0ce0` |
-| **Phase 15** | Viewer Search & Filter Experience | Viewer Frontend | ⏳ Next | — |
-| **Phase 16** | Viewer Show Details (Language Selector, Trailers, Seasons) | Viewer Frontend | ⏳ Upcoming | — |
-| **Phase 17** | Player Experience (Graceful Stub / Embed) | Viewer Frontend | ⏳ Upcoming | — |
+| **Phase 15** | Viewer Search & Filter Experience | Viewer Frontend | ✅ Completed | `9c5daf5` |
+| **Phase 16** | Viewer Show Details (Language Selector, Trailers, Seasons) | Viewer Frontend | ✅ Completed | `471dd1c` |
+| **Phase 17** | Player Experience (Graceful Stub / Embed) | Viewer Frontend | ⏳ Next | — |
 | **Phase 18** | UI/UX Polish (Accessibility, Animations, Loading Skeletons) | Full Stack UI | ⏳ Upcoming | — |
 | **Phase 19** | End-to-End Testing & Quality Assurance | QA / Testing | ⏳ Upcoming | — |
 | **Phase 20** | Docker Compose & CI Pipeline Finalization | DevOps / Docker | ⏳ Upcoming | — |
@@ -109,6 +109,7 @@ This document tracks the complete 24-phase implementation roadmap for the **Pebl
 
 ### PHASE 16 — VIEWER SHOW DETAILS
 - **Scope**: Show detail view with synopsis, banner, seasons and episodes list with thumbnails and duration, language variant selector for collapsed episodes, and separate trailers section for Season 0.
+- **Status**: Completed (`471dd1c`).
 
 ### PHASE 17 — PLAYER EXPERIENCE
 - **Scope**: Graceful video player entry modal/view with episode metadata, duration, language options, and clearly documented media streaming stub.
