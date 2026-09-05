@@ -48,13 +48,13 @@ Thumbs.db
 # Docker
 .docker/
 
-# Storage (local dev artwork uploads)
-storage/
-backend/storage/
+# Storage (local dev artwork uploads - only root and backend/storage, never backend/app/storage)
+/storage/
+/backend/storage/
 
 # Catalogue output (generated — not committed)
-catalogue/
-backend/catalogue/
+/catalogue/
+/backend/catalogue/
 backend/catalogue/catalogue.json
 backend/catalogue/catalogue_tmp_*.json
 
