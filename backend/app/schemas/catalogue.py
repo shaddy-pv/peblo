@@ -71,3 +71,15 @@ class CatalogueData(BaseModel):
         description="Published shows grouped by section (featured, series, minisodes, songs)",
     )
     stats: CatalogueStats = Field(default_factory=CatalogueStats)
+
+
+class CatalogueSearchResponse(BaseModel):
+    query: str | None = None
+    category: str | None = None
+    language: str | None = None
+    section: str | None = None
+    total_results: int = 0
+    results: list[CatalogueShow] = Field(
+        default_factory=list,
+        description="Matching published shows with seasons, collapsed episodes, and artwork",
+    )

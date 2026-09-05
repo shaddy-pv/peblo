@@ -17,8 +17,8 @@ This document tracks the complete 24-phase implementation roadmap for the **Pebl
 | **Phase 6** | Validation Engine & Publish-Readiness Report | Backend / Validation | ✅ Completed | `3ac661e` |
 | **Phase 7** | Catalogue Generation & Transformation | Backend / Catalogue | ✅ Completed | `ed51b10` |
 | **Phase 8** | Atomic Publishing Pipeline & Admin Endpoints | Backend / Publishing | ✅ Completed | `34eb946` |
-| **Phase 9** | Catalogue Read & Composed Search API | Backend / Catalog API | ⏳ Next | — |
-| **Phase 10** | Internal CMS Foundation (Shell, Router, TanStack Query) | CMS Frontend | ⏳ Upcoming | — |
+| **Phase 9** | Catalogue Read & Composed Search API | Backend / Catalog API | ✅ Completed | `pending` |
+| **Phase 10** | Internal CMS Foundation (Shell, Router, TanStack Query) | CMS Frontend | ⏳ Next | — |
 | **Phase 11** | CMS Content Management (Forms, Artwork Uploads, Lists) | CMS Frontend | ⏳ Upcoming | — |
 | **Phase 12** | CMS Publish Workflow (Report, Run History, Permissions) | CMS Frontend | ⏳ Upcoming | — |
 | **Phase 13** | Viewer Foundation (Shell, Design System, Responsive) | Viewer Frontend | ⏳ Upcoming | — |
@@ -77,7 +77,7 @@ This document tracks the complete 24-phase implementation roadmap for the **Pebl
 - **Scope**:
   - `GET /catalog`: Serves the live published catalogue safely and quickly to the Viewer.
   - `GET /catalog/search?q=&category=&language=&section=`: High-speed catalogue search supporting title query, category filtering, language filtering, and section filtering where all filters compose seamlessly.
-- **Status**: ⏳ Ready to execute upon user command.
+- **Status**: Completed.
 
 ### PHASE 10 — CMS FOUNDATION
 - **Scope**: React + TypeScript CMS shell, React Router v6, TanStack Query v5 provider, auth state management, token handling, layout navigation, permission-aware UI states.

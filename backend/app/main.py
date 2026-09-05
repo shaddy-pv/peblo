@@ -70,6 +70,10 @@ def create_application() -> FastAPI:
     # ── API routes ───────────────────────────────────────────────────────────
     app.include_router(api_router, prefix=settings.API_V1_PREFIX)
 
+    # ── Direct Viewer Catalogue routes (/catalog and /catalog/search) ────────
+    from app.api.v1.endpoints.catalog import router as catalog_router
+    app.include_router(catalog_router, prefix="/catalog", tags=["catalog-viewer"])
+
     # ── Local storage static files ────────────────────────────────────────────
     # In production, artwork is served from Cloudflare R2 directly.
     # In local dev, FastAPI serves uploaded files from the ./storage directory.

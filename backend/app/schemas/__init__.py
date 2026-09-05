@@ -8,6 +8,7 @@ from app.schemas.catalogue import (
     CatalogueData,
     CatalogueEpisode,
     CatalogueLanguageVariant,
+    CatalogueSearchResponse,
     CatalogueSeason,
     CatalogueShow,
     CatalogueStats,
@@ -88,6 +89,7 @@ __all__ = [
     "CatalogueShow",
     "CatalogueStats",
     "CatalogueData",
+    "CatalogueSearchResponse",
     # Publish
     "PublishResponse",
     "PublishRunRead",

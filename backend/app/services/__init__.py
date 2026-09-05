@@ -6,6 +6,7 @@ from app.services.artwork_service import ArtworkService
 from app.services.artwork_validator import ArtworkValidationError, ArtworkValidator
 from app.services.auth_service import AuthService
 from app.services.catalogue_builder import CatalogueBuilder
+from app.services.catalogue_service import CatalogueService
 from app.services.episode_service import EpisodeService
 from app.services.publish_service import PublishService
 from app.services.season_service import SeasonService
@@ -23,4 +24,5 @@ __all__ = [
     "ValidationEngine",
     "CatalogueBuilder",
     "PublishService",
+    "CatalogueService",
 ]
