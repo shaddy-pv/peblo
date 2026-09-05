@@ -3,6 +3,15 @@ Pydantic schemas registry.
 """
 
 from app.schemas.artwork import ArtworkRead, EntityArtworkSummary
+from app.schemas.catalogue import (
+    CatalogueArtwork,
+    CatalogueData,
+    CatalogueEpisode,
+    CatalogueLanguageVariant,
+    CatalogueSeason,
+    CatalogueShow,
+    CatalogueStats,
+)
 from app.schemas.common import PaginatedResponse
 from app.schemas.episode import (
     EpisodeBase,
@@ -70,4 +79,12 @@ __all__ = [
     "ValidationIssue",
     "ValidationSummary",
     "ValidationReport",
+    # Catalogue
+    "CatalogueArtwork",
+    "CatalogueLanguageVariant",
+    "CatalogueEpisode",
+    "CatalogueSeason",
+    "CatalogueShow",
+    "CatalogueStats",
+    "CatalogueData",
 ]
