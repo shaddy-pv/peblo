@@ -62,14 +62,30 @@ from app.models.user import User
 # ── Paths ─────────────────────────────────────────────────────────────────────
 BACKEND_DIR = Path(__file__).resolve().parents[2]
 PROJECT_ROOT = BACKEND_DIR.parent
-SEED_FILE = PROJECT_ROOT / "seed_shows.json"
-REFERENCE_FILE = PROJECT_ROOT / "reference.json"
+
+
+def _resolve_asset(filename: str) -> Path:
+    candidates = [
+        PROJECT_ROOT / filename,
+        BACKEND_DIR / "seed_data" / filename,
+        BACKEND_DIR / filename,
+        Path("/app/seed_data") / filename,
+        Path("/app") / filename,
+    ]
+    for c in candidates:
+        if c.exists():
+            return c
+    return candidates[0]
+
+
+SEED_FILE = _resolve_asset("seed_shows.json")
+REFERENCE_FILE = _resolve_asset("reference.json")
 
 # Sample images bundled with the project
 SAMPLE_IMAGES = {
-    ArtworkType.POSTER: PROJECT_ROOT / "poster_good.jpg",
-    ArtworkType.BANNER: PROJECT_ROOT / "banner_good.jpg",
-    ArtworkType.THUMBNAIL: PROJECT_ROOT / "thumb_good.jpg",
+    ArtworkType.POSTER: _resolve_asset("poster_good.jpg"),
+    ArtworkType.BANNER: _resolve_asset("banner_good.jpg"),
+    ArtworkType.THUMBNAIL: _resolve_asset("thumb_good.jpg"),
 }
 
 # Demo user credentials (passwords are bcrypt hashed)

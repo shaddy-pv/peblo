@@ -51,6 +51,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/health')"]
       interval: 30s
@@ -68,6 +70,10 @@ services:
     container_name: peblo_migrate
     environment:
       DATABASE_URL: postgresql+asyncpg://peblo:peblo_secret@db:5432/peblo_tv
+      PYTHONPATH: /app
+    volumes:
+      - artwork_storage:/app/storage
+      - catalogue_data:/app/catalogue
     command: ["sh", "-c", "alembic upgrade head && python -m app.scripts.seed"]
     depends_on:
       db:

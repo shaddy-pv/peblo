@@ -21,6 +21,14 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
+# ── Ensure app package is in sys.path ───────────────────────────────────────
+import sys
+from pathlib import Path
+
+_backend_dir = Path(__file__).resolve().parents[1]
+if str(_backend_dir) not in sys.path:
+    sys.path.insert(0, str(_backend_dir))
+
 # ── Import models so Alembic can auto-detect schema changes ──────────────────
 # ALL models must be imported before target_metadata is set.
 # Alembic autogenerate inspects Base.metadata — models only appear there
