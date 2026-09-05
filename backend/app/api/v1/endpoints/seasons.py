@@ -18,6 +18,11 @@ router = APIRouter()
 
 
 @router.get(
+    "",
+    response_model=list[SeasonRead],
+    include_in_schema=False,
+)
+@router.get(
     "/",
     response_model=list[SeasonRead],
     summary="List seasons",
@@ -32,6 +37,12 @@ async def list_seasons(
     return [SeasonRead.model_validate(s) for s in seasons]
 
 
+@router.post(
+    "",
+    response_model=SeasonRead,
+    status_code=status.HTTP_201_CREATED,
+    include_in_schema=False,
+)
 @router.post(
     "/",
     response_model=SeasonRead,

@@ -21,6 +21,11 @@ router = APIRouter()
 
 
 @router.get(
+    "",
+    response_model=PaginatedResponse[ShowRead],
+    include_in_schema=False,
+)
+@router.get(
     "/",
     response_model=PaginatedResponse[ShowRead],
     summary="List shows with filtering and search",
@@ -55,6 +60,12 @@ async def list_shows(
     )
 
 
+@router.post(
+    "",
+    response_model=ShowRead,
+    status_code=status.HTTP_201_CREATED,
+    include_in_schema=False,
+)
 @router.post(
     "/",
     response_model=ShowRead,
