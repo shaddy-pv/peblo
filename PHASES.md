@@ -25,8 +25,8 @@ This document tracks the complete 24-phase implementation roadmap for the **Pebl
 | **Phase 14** | Viewer Home (Hero Banner, Section Rows, Posters) | Viewer Frontend | ✅ Completed | `4df0ce0` |
 | **Phase 15** | Viewer Search & Filter Experience | Viewer Frontend | ✅ Completed | `9c5daf5` |
 | **Phase 16** | Viewer Show Details (Language Selector, Trailers, Seasons) | Viewer Frontend | ✅ Completed | `471dd1c` |
-| **Phase 17** | Player Experience (Graceful Stub / Embed) | Viewer Frontend | ⏳ Next | — |
-| **Phase 18** | UI/UX Polish (Accessibility, Animations, Loading Skeletons) | Full Stack UI | ⏳ Upcoming | — |
+| **Phase 17** | Player Experience (Graceful Stub / Embed) | Viewer Frontend | ✅ Completed | `341534e` |
+| **Phase 18** | UI/UX Polish (Accessibility, Animations, Loading Skeletons) | Full Stack UI | ⏳ Next | — |
 | **Phase 19** | End-to-End Testing & Quality Assurance | QA / Testing | ⏳ Upcoming | — |
 | **Phase 20** | Docker Compose & CI Pipeline Finalization | DevOps / Docker | ⏳ Upcoming | — |
 | **Phase 21** | Production Readiness (Security, Alerting, Secrets) | Operability | ⏳ Upcoming | — |
@@ -113,6 +113,7 @@ This document tracks the complete 24-phase implementation roadmap for the **Pebl
 
 ### PHASE 17 — PLAYER EXPERIENCE
 - **Scope**: Graceful video player entry modal/view with episode metadata, duration, language options, and clearly documented media streaming stub.
+- **Status**: Completed (`341534e`).
 
 ### PHASE 18 — UX POLISH
 - **Scope**: Mobile responsiveness across breakpoints (360px–1920px), playful child-friendly typography and soft gradients, keyboard accessibility, loading skeletons, image error fallbacks.
