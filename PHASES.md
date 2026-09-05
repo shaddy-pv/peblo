@@ -105,6 +105,7 @@ This document tracks the complete 24-phase implementation roadmap for the **Pebl
 
 ### PHASE 15 — VIEWER SEARCH & FILTERS
 - **Scope**: Search bar with debounced queries, category filter pills, language filter toggles, live filtered grid, and friendly empty states.
+- **Status**: Completed (`9c5daf5`).
 
 ### PHASE 16 — VIEWER SHOW DETAILS
 - **Scope**: Show detail view with synopsis, banner, seasons and episodes list with thumbnails and duration, language variant selector for collapsed episodes, and separate trailers section for Season 0.
