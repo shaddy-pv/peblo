@@ -91,8 +91,8 @@ DEMO_USERS = [
 
 def _hash_password(plain: str) -> str:
     """Hash a password using bcrypt."""
-    from passlib.hash import bcrypt
-    return bcrypt.hash(plain)
+    from app.core.security import get_password_hash
+    return get_password_hash(plain)
 
 
 def _load_json(path: Path) -> list | dict:
