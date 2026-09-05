@@ -1,23 +1,33 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
-
+import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { catalogApi, extractErrorMessage } from '../api/client';
-import { ArtworkImage } from '../components/common/ArtworkImage';
 import { EmptyState } from '../components/common/EmptyState';
+import { ShowDetailSkeleton } from '../components/show/ShowDetailSkeleton';
+import { ShowHero } from '../components/show/ShowHero';
+import { EpisodeCard } from '../components/show/EpisodeCard';
+import { TrailerSection } from '../components/show/TrailerSection';
+import { VideoPlayerModal } from '../components/show/VideoPlayerModal';
 import type { CatalogueEpisode } from '../types';
+
+interface ActivePlayState {
+  item: CatalogueEpisode;
+  itemType: 'episode' | 'trailer';
+  language: string;
+  seasonNumber?: number;
+}
 
 export const ShowDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
 
-  // State for active season tab
+  // Active season number state
   const [selectedSeasonNumber, setSelectedSeasonNumber] = useState<number | null>(null);
 
+  // Global audio language preference for episodes ('all' | 'en' | 'hi')
+  const [globalLanguagePreference, setGlobalLanguagePreference] = useState<string>('en');
+
   // Video player modal state
-  const [activePlayEpisode, setActivePlayEpisode] = useState<{
-    episode: CatalogueEpisode;
-    language: string;
-  } | null>(null);
+  const [activePlay, setActivePlay] = useState<ActivePlayState | null>(null);
 
   const {
     data: show,
@@ -26,16 +36,12 @@ export const ShowDetailPage: React.FC = () => {
     error,
   } = useQuery({
     queryKey: ['catalog-show', slug],
-    queryFn: () => (slug ? catalogApi.getShow(slug) : Promise.reject('No slug provided')),
+    queryFn: () => (slug ? catalogApi.getShow(slug) : Promise.reject(new Error('No slug provided'))),
     enabled: !!slug,
   });
 
   if (isLoading) {
-    return (
-      <div style={{ paddingTop: '100px', minHeight: '80vh' }} className="content-container">
-        <div className="skeleton" style={{ width: '100%', height: '400px', borderRadius: 'var(--radius-lg)' }} />
-      </div>
-    );
+    return <ShowDetailSkeleton />;
   }
 
   if (isError || !show) {
@@ -45,7 +51,7 @@ export const ShowDetailPage: React.FC = () => {
           icon="📺"
           title="Show Not Found"
           description={extractErrorMessage(error)}
-          actionText="Back to Home"
+          actionText="Browse Shows"
           actionHref="/"
         />
       </div>
@@ -53,350 +59,309 @@ export const ShowDetailPage: React.FC = () => {
   }
 
   const seasons = show.seasons || [];
-  const currentSeason =
-    seasons.find((s) => s.season_number === selectedSeasonNumber) || seasons[0];
   const trailers = show.trailers || [];
 
-  return (
-    <div>
-      {/* ── Hero Banner Header ──────────────────────────────────────────── */}
-      <div
-        style={{
-          position: 'relative',
-          minHeight: '60vh',
-          display: 'flex',
-          alignItems: 'flex-end',
-          padding: '6rem 2.5rem 3rem 2.5rem',
-          overflow: 'hidden',
-        }}
-      >
-        {/* Banner Artwork */}
-        <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
-          <ArtworkImage
-            src={show.artwork.banner}
-            alt={show.title}
-            aspectRatio="16/9"
-            fallbackIcon="🎬"
-            style={{ width: '100%', height: '100%', borderRadius: 0 }}
-          />
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              background:
-                'linear-gradient(180deg, rgba(11, 15, 25, 0.4) 0%, rgba(11, 15, 25, 0.85) 70%, #0b0f19 100%), linear-gradient(90deg, #0b0f19 0%, rgba(11, 15, 25, 0.7) 50%, transparent 100%)',
-            }}
-          />
-        </div>
+  // Determine active season: user selected or first available season
+  const currentSeason =
+    (selectedSeasonNumber !== null
+      ? seasons.find((s) => s.season_number === selectedSeasonNumber)
+      : null) || seasons[0];
 
-        {/* Content Details */}
+  // Handler to play Episode 1 from the Hero CTA
+  const handlePlayEpisode1 = () => {
+    const firstSeason = seasons[0];
+    const firstEpisode = firstSeason?.episodes?.[0];
+    if (firstEpisode) {
+      const preferredLang =
+        firstEpisode.languages.find(
+          (l) => l.language.toLowerCase() === globalLanguagePreference.toLowerCase()
+        )?.language ||
+        firstEpisode.languages[0]?.language ||
+        'en';
+
+      setActivePlay({
+        item: firstEpisode,
+        itemType: 'episode',
+        language: preferredLang,
+        seasonNumber: firstSeason.season_number,
+      });
+    }
+  };
+
+  // Handler to play Trailer from the Hero CTA
+  const handlePlayHeroTrailer = () => {
+    if (trailers.length > 0) {
+      setActivePlay({
+        item: trailers[0],
+        itemType: 'trailer',
+        language: trailers[0].languages?.[0]?.language || 'en',
+        seasonNumber: 0,
+      });
+    }
+  };
+
+  // Handler to play a specific episode
+  const handlePlayEpisode = (episode: CatalogueEpisode, language: string) => {
+    setActivePlay({
+      item: episode,
+      itemType: 'episode',
+      language,
+      seasonNumber: currentSeason?.season_number ?? 1,
+    });
+  };
+
+  // Handler to play a specific trailer
+  const handlePlayTrailer = (trailer: CatalogueEpisode) => {
+    setActivePlay({
+      item: trailer,
+      itemType: 'trailer',
+      language: trailer.languages?.[0]?.language || 'en',
+      seasonNumber: 0,
+    });
+  };
+
+  return (
+    <div style={{ minHeight: '100vh', paddingBottom: '5rem' }}>
+      {/* ── 1. Hero Banner ──────────────────────────────────────────────── */}
+      <ShowHero
+        show={show}
+        onPlayEpisode1={handlePlayEpisode1}
+        onPlayTrailer={trailers.length > 0 ? handlePlayHeroTrailer : undefined}
+      />
+
+      {/* ── 2. Main Show Content (Seasons, Episodes, Language Bar) ──────── */}
+      <div className="content-container" style={{ marginTop: '2.5rem' }}>
+        {/* Global Language Preference Bar & Season Selector Header */}
         <div
           style={{
-            position: 'relative',
-            zIndex: 2,
-            maxWidth: '720px',
             display: 'flex',
-            flexDirection: 'column',
-            gap: '0.85rem',
+            flexWrap: 'wrap',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '1rem',
+            paddingBottom: '1.25rem',
+            borderBottom: '1px solid var(--color-border)',
+            marginBottom: '1.75rem',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-            <span className="badge badge-primary">{show.section.toUpperCase()}</span>
-            {show.categories.map((c) => (
-              <span key={c} className="badge badge-cyan">
-                #{c}
-              </span>
-            ))}
-          </div>
-
-          <h1 style={{ textShadow: '0 4px 20px rgba(0, 0, 0, 0.8)' }}>{show.title}</h1>
-
-          {show.synopsis && (
-            <p style={{ fontSize: '1rem', color: '#e2e8f0', lineHeight: 1.6, textShadow: '0 2px 8px rgba(0, 0, 0, 0.8)' }}>
-              {show.synopsis}
-            </p>
+          {/* Season Selector Tabs */}
+          {seasons.length > 0 ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
+              {seasons.map((s) => {
+                const active = (currentSeason?.season_number ?? 1) === s.season_number;
+                return (
+                  <button
+                    key={s.season_number}
+                    type="button"
+                    onClick={() => setSelectedSeasonNumber(s.season_number)}
+                    style={{
+                      padding: '0.55rem 1.25rem',
+                      fontSize: '0.9rem',
+                      fontWeight: 700,
+                      borderRadius: 'var(--radius-sm)',
+                      background: active
+                        ? 'linear-gradient(135deg, var(--color-primary), #4f46e5)'
+                        : 'rgba(255, 255, 255, 0.05)',
+                      color: active ? '#ffffff' : 'var(--color-text-secondary)',
+                      border: '1px solid',
+                      borderColor: active ? 'var(--color-primary)' : 'rgba(255, 255, 255, 0.08)',
+                      boxShadow: active ? '0 4px 12px var(--color-primary-glow)' : 'none',
+                      transition: 'all 0.15s ease',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Season {s.season_number}
+                    {s.title ? ` — ${s.title}` : ''}
+                  </button>
+                );
+              })}
+            </div>
+          ) : (
+            <span style={{ fontSize: '1.1rem', fontWeight: 700, color: '#fff' }}>
+              Episodes
+            </span>
           )}
 
-          {/* Quick Metrics */}
-          <div style={{ display: 'flex', gap: '1.5rem', fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>
-            <span>📁 {seasons.length} Season(s)</span>
-            <span>🎬 {seasons.reduce((acc, s) => acc + s.episodes.length, 0)} Episodes</span>
-            {trailers.length > 0 && <span>🎥 {trailers.length} Trailer(s)</span>}
-          </div>
-        </div>
-      </div>
-
-      {/* ── Main Content: Seasons, Episodes & Trailers ──────────────────── */}
-      <div className="content-container" style={{ marginTop: '1.5rem', paddingBottom: '4rem' }}>
-        {/* Season Selector Tabs */}
-        {seasons.length > 0 && (
+          {/* Audio Language Preference Control */}
           <div
             style={{
               display: 'flex',
               alignItems: 'center',
               gap: '0.5rem',
-              borderBottom: '1px solid var(--color-border)',
-              paddingBottom: '0.75rem',
-              marginBottom: '1.5rem',
-              overflowX: 'auto',
+              background: 'rgba(255, 255, 255, 0.03)',
+              padding: '0.35rem 0.75rem',
+              borderRadius: 'var(--radius-full)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
             }}
           >
-            {seasons.map((s) => {
-              const active = (currentSeason?.season_number ?? 1) === s.season_number;
-              return (
-                <button
-                  key={s.season_number}
-                  type="button"
-                  onClick={() => setSelectedSeasonNumber(s.season_number)}
-                  style={{
-                    padding: '0.5rem 1.1rem',
-                    fontSize: '0.9rem',
-                    fontWeight: 700,
-                    borderRadius: 'var(--radius-sm)',
-                    background: active ? 'var(--color-primary)' : 'rgba(255, 255, 255, 0.05)',
-                    color: active ? '#fff' : 'var(--color-text-secondary)',
-                    transition: 'all 0.15s ease',
-                  }}
-                >
-                  Season {s.season_number} {s.title ? `— ${s.title}` : ''}
-                </button>
-              );
-            })}
+            <span style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)', fontWeight: 600 }}>
+              Audio Track:
+            </span>
+            <button
+              type="button"
+              onClick={() => setGlobalLanguagePreference('en')}
+              style={{
+                padding: '0.25rem 0.65rem',
+                borderRadius: 'var(--radius-full)',
+                fontSize: '0.75rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                background:
+                  globalLanguagePreference === 'en'
+                    ? 'rgba(59, 130, 246, 0.25)'
+                    : 'transparent',
+                color: globalLanguagePreference === 'en' ? '#93c5fd' : 'var(--color-text-secondary)',
+                border: '1px solid',
+                borderColor:
+                  globalLanguagePreference === 'en'
+                    ? 'rgba(59, 130, 246, 0.5)'
+                    : 'transparent',
+                transition: 'all 0.15s ease',
+              }}
+            >
+              🇬🇧 English
+            </button>
+            <button
+              type="button"
+              onClick={() => setGlobalLanguagePreference('hi')}
+              style={{
+                padding: '0.25rem 0.65rem',
+                borderRadius: 'var(--radius-full)',
+                fontSize: '0.75rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                background:
+                  globalLanguagePreference === 'hi'
+                    ? 'rgba(249, 115, 22, 0.25)'
+                    : 'transparent',
+                color: globalLanguagePreference === 'hi' ? '#fdba74' : 'var(--color-text-secondary)',
+                border: '1px solid',
+                borderColor:
+                  globalLanguagePreference === 'hi'
+                    ? 'rgba(249, 115, 22, 0.5)'
+                    : 'transparent',
+                transition: 'all 0.15s ease',
+              }}
+            >
+              🇮🇳 हिन्दी (Hindi)
+            </button>
           </div>
-        )}
+        </div>
 
-        {/* Episodes List in Current Season */}
-        {currentSeason && (
-          <div style={{ marginBottom: '3rem' }}>
-            <h2 style={{ fontSize: '1.25rem', marginBottom: '1rem', color: '#fff' }}>
-              Episodes ({currentSeason.episodes.length})
-            </h2>
+        {/* ── 3. Episodes Grid ────────────────────────────────────────────── */}
+        {currentSeason && currentSeason.episodes.length > 0 ? (
+          <div>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginBottom: '1.25rem',
+              }}
+            >
+              <h3 style={{ fontSize: '1.2rem', color: '#fff', fontWeight: 700 }}>
+                Season {currentSeason.season_number} Episodes ({currentSeason.episodes.length})
+              </h3>
+              <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>
+                Select an audio language below to customize stream
+              </span>
+            </div>
 
             <div
               style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-                gap: '1.25rem',
+                gap: '1.5rem',
               }}
             >
               {currentSeason.episodes.map((ep) => (
-                <div
+                <EpisodeCard
                   key={ep.content_group}
-                  style={{
-                    background: 'var(--color-bg-surface)',
-                    border: '1px solid var(--color-border)',
-                    borderRadius: 'var(--radius-md)',
-                    overflow: 'hidden',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    transition: 'transform 0.2s ease, border-color 0.2s ease',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'translateY(-3px)';
-                    e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.4)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'none';
-                    e.currentTarget.style.borderColor = 'var(--color-border)';
-                  }}
-                >
-                  {/* Thumbnail Artwork (16:9) */}
-                  <div style={{ position: 'relative' }}>
-                    <ArtworkImage
-                      src={ep.artwork.thumbnail}
-                      alt={ep.title}
-                      aspectRatio="16/9"
-                      fallbackIcon="🎬"
-                    />
-                    <div
-                      style={{
-                        position: 'absolute',
-                        bottom: '8px',
-                        right: '8px',
-                        background: 'rgba(0, 0, 0, 0.75)',
-                        padding: '0.15rem 0.45rem',
-                        borderRadius: '4px',
-                        fontSize: '0.72rem',
-                        fontWeight: 600,
-                        color: '#fff',
-                        fontFamily: 'var(--font-mono)',
-                      }}
-                    >
-                      {Math.floor(ep.duration_seconds / 60)}m {ep.duration_seconds % 60}s
-                    </div>
-                  </div>
-
-                  {/* Episode Info & Language Variant Selector */}
-                  <div style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', flex: 1 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                      <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-primary)' }}>
-                        EPISODE {ep.episode_number}
-                      </span>
-                    </div>
-
-                    <div style={{ fontWeight: 700, fontSize: '0.95rem', color: '#fff', lineHeight: 1.3 }}>
-                      {ep.title}
-                    </div>
-
-                    {/* Language Variant Buttons (Bilingual Support: English/Hindi) */}
-                    <div style={{ marginTop: 'auto', paddingTop: '0.5rem' }}>
-                      <div style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)', marginBottom: '0.35rem' }}>
-                        PLAY IN LANGUAGE:
-                      </div>
-                      <div style={{ display: 'flex', gap: '0.4rem' }}>
-                        {ep.languages.map((variant) => (
-                          <button
-                            key={variant.language}
-                            type="button"
-                            onClick={() =>
-                              setActivePlayEpisode({
-                                episode: ep,
-                                language: variant.language,
-                              })
-                            }
-                            className={`badge ${variant.language === 'en' ? 'badge-lang-en' : 'badge-lang-hi'}`}
-                            style={{ cursor: 'pointer', padding: '0.3rem 0.6rem' }}
-                          >
-                            ▶ {variant.language.toUpperCase()}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                  episode={ep}
+                  globalLanguagePreference={globalLanguagePreference}
+                  onPlay={handlePlayEpisode}
+                />
               ))}
             </div>
           </div>
-        )}
-
-        {/* ── Season 0 Trailers & Teasers (Separated per convention) ──── */}
-        {trailers.length > 0 && (
-          <div style={{ borderTop: '1px solid var(--color-border)', paddingTop: '2rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-              <span style={{ fontSize: '1.35rem' }}>🎥</span>
-              <h2 style={{ fontSize: '1.25rem', color: '#fff' }}>Trailers & Teasers (Season 0)</h2>
-            </div>
-            <p style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)', marginBottom: '1.25rem' }}>
-              Preview clips and introductory trailers separated from numbered episodic seasons.
-            </p>
-
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
-                gap: '1.25rem',
-              }}
-            >
-              {trailers.map((trailer) => (
-                <div
-                  key={trailer.content_group}
-                  style={{
-                    background: 'var(--color-bg-surface)',
-                    border: '1px solid var(--color-border)',
-                    borderRadius: 'var(--radius-md)',
-                    overflow: 'hidden',
-                  }}
-                >
-                  <ArtworkImage
-                    src={trailer.artwork.thumbnail}
-                    alt={trailer.title}
-                    aspectRatio="16/9"
-                    fallbackIcon="🎥"
-                  />
-                  <div style={{ padding: '0.85rem' }}>
-                    <div style={{ fontWeight: 700, fontSize: '0.9rem', color: '#fff' }}>{trailer.title}</div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: '0.2rem' }}>
-                      ⏱️ {trailer.duration_seconds}s
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* ── Video Player Modal Stub ─────────────────────────────────────── */}
-      {activePlayEpisode && (
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(0, 0, 0, 0.85)',
-            backdropFilter: 'blur(10px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '1.5rem',
-            zIndex: 999,
-          }}
-          onClick={() => setActivePlayEpisode(null)}
-        >
+        ) : (
           <div
             style={{
-              background: 'var(--color-bg-surface)',
+              padding: '3rem',
+              textAlign: 'center',
+              backgroundColor: 'var(--color-bg-surface)',
+              borderRadius: 'var(--radius-md)',
               border: '1px solid var(--color-border)',
-              borderRadius: 'var(--radius-lg)',
-              maxWidth: '680px',
-              width: '100%',
-              overflow: 'hidden',
-              boxShadow: 'var(--shadow-hero)',
             }}
-            onClick={(e) => e.stopPropagation()}
           >
-            <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--color-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <h3 style={{ color: '#fff' }}>Now Playing (Stream Stub)</h3>
-                <p style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)' }}>
-                  {show.title} • Ep #{activePlayEpisode.episode.episode_number}: {activePlayEpisode.episode.title}
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setActivePlayEpisode(null)}
-                style={{ color: 'var(--color-text-secondary)', fontSize: '1.25rem', cursor: 'pointer' }}
-              >
-                ✕
-              </button>
-            </div>
-
-            {/* Video Player Display Screen */}
-            <div
-              style={{
-                aspectRatio: '16/9',
-                background: '#000',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                position: 'relative',
-              }}
-            >
-              <span style={{ fontSize: '3.5rem', marginBottom: '0.75rem', animation: 'pulse 2s infinite' }}>
-                ▶️
-              </span>
-              <div style={{ color: '#fff', fontWeight: 700 }}>
-                Streaming Track: [{activePlayEpisode.language.toUpperCase()}]
-              </div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: '0.35rem' }}>
-                Duration: {activePlayEpisode.episode.duration_seconds}s • Content Group: {activePlayEpisode.episode.content_group}
-              </div>
-            </div>
-
-            <div style={{ padding: '1rem 1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(15, 23, 42, 0.4)' }}>
-              <span style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)' }}>
-                Child Mode active: Safe media player stub
-              </span>
-              <button
-                type="button"
-                className="btn btn-primary btn-sm"
-                onClick={() => setActivePlayEpisode(null)}
-              >
-                Close Player
-              </button>
-            </div>
+            <p style={{ color: 'var(--color-text-secondary)' }}>
+              No episodes currently available for this season.
+            </p>
           </div>
+        )}
+
+        {/* ── 4. Dedicated Trailers & Teasers Section (Season 0) ──────────── */}
+        <TrailerSection trailers={trailers} onPlayTrailer={handlePlayTrailer} />
+
+        {/* ── 5. Bottom Navigation Shortcut ──────────────────────────────── */}
+        <div
+          style={{
+            marginTop: '4rem',
+            paddingTop: '2rem',
+            borderTop: '1px solid var(--color-border)',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '1rem',
+          }}
+        >
+          <Link
+            to="/"
+            style={{
+              fontSize: '0.875rem',
+              color: 'var(--color-text-secondary)',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+            }}
+          >
+            ← Back to Home Catalogue
+          </Link>
+
+          <Link
+            to="/search"
+            style={{
+              fontSize: '0.875rem',
+              color: 'var(--color-primary)',
+              fontWeight: 600,
+            }}
+          >
+            🔍 Explore All Shows & Categories →
+          </Link>
         </div>
+      </div>
+
+      {/* ── 6. Full-Featured Video Player Modal (Streaming Stub) ────────── */}
+      {activePlay && (
+        <VideoPlayerModal
+          isOpen={true}
+          onClose={() => setActivePlay(null)}
+          showTitle={show.title}
+          itemTitle={activePlay.item.title}
+          itemType={activePlay.itemType}
+          episodeNumber={activePlay.item.episode_number}
+          seasonNumber={activePlay.seasonNumber}
+          durationSeconds={activePlay.item.duration_seconds}
+          contentGroup={activePlay.item.content_group}
+          availableLanguages={activePlay.item.languages.map((l) => ({
+            language: l.language,
+            title: l.title,
+            duration_seconds: l.duration_seconds,
+          }))}
+          initialLanguage={activePlay.language}
+          thumbnailUrl={activePlay.item.artwork.thumbnail}
+        />
       )}
     </div>
   );
