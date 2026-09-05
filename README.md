@@ -3,7 +3,7 @@
 A production-grade streaming content pipeline built for the Peblo TV take-home assessment. Editorial staff manage shows, seasons, episodes, and artwork in an internal CMS; the FastAPI backend runs strict publish-readiness validations and compiles an atomic, denormalized catalogue; and children browse, search, and watch bilingual shows in a fast, Netflix-style viewer UI.
 
 **GitHub**: [shaddy-pv](https://github.com/shaddy-pv)  
-**Repository**: [https://github.com/shaddy-pv](https://github.com/shaddy-pv)
+**Repository**: [https://github.com/shaddy-pv/peblo](https://github.com/shaddy-pv/peblo)
 
 ---
 
@@ -60,7 +60,7 @@ Viewer UI (React 19)
 
 ### 1. Clone & Start Stack
 ```bash
-git clone https://github.com/shaddy-pv.git
+git clone https://github.com/shaddy-pv/peblo.git
 cd peblo
 cp .env.example .env
 docker compose up --build
