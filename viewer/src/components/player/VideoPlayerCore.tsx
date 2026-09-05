@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { ArtworkImage } from '../common/ArtworkImage';
+import { getEpisodeThumbnail } from '../../utils/artwork';
 import type { CatalogueEpisode, CatalogueLanguageVariant } from '../../types';
 
 // ── Official Peblo TV YouTube Playlists & Video ID Mappings ───────────────────
@@ -346,7 +347,7 @@ export const VideoPlayerCore: React.FC<VideoPlayerCoreProps> = ({
               }}
             >
               <ArtworkImage
-                src={currentEpisode.artwork.thumbnail}
+                src={getEpisodeThumbnail(currentEpisode.content_group, currentEpisode.artwork.thumbnail)}
                 alt={displayTitle}
                 aspectRatio="16/9"
                 fallbackIcon="🎬"

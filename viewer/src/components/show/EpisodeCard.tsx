@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ArtworkImage } from '../common/ArtworkImage';
+import { getEpisodeThumbnail } from '../../utils/artwork';
 import type { CatalogueEpisode } from '../../types';
 
 interface EpisodeCardProps {
@@ -82,7 +83,7 @@ export const EpisodeCard: React.FC<EpisodeCardProps> = ({
         onClick={() => onPlay(episode, selectedLang)}
       >
         <ArtworkImage
-          src={episode.artwork.thumbnail}
+          src={getEpisodeThumbnail(episode.content_group, episode.artwork.thumbnail)}
           alt={currentTitle}
           aspectRatio="16/9"
           fallbackIcon="🎬"

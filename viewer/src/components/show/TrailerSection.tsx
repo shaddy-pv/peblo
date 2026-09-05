@@ -1,5 +1,6 @@
 import React from 'react';
 import { ArtworkImage } from '../common/ArtworkImage';
+import { getEpisodeThumbnail } from '../../utils/artwork';
 import type { CatalogueEpisode } from '../../types';
 
 interface TrailerSectionProps {
@@ -85,7 +86,7 @@ export const TrailerSection: React.FC<TrailerSectionProps> = ({
             {/* 16:9 Preview Thumbnail */}
             <div style={{ position: 'relative' }}>
               <ArtworkImage
-                src={trailer.artwork.thumbnail}
+                src={getEpisodeThumbnail(trailer.content_group, trailer.artwork.thumbnail)}
                 alt={trailer.title}
                 aspectRatio="16/9"
                 fallbackIcon="🎥"
