@@ -22,8 +22,7 @@ from httpx import ASGITransport, AsyncClient
 from app.core.config import settings
 from app.main import app
 
-# ── Async mode ────────────────────────────────────────────────────────────────
-pytest_plugins = ["pytest_asyncio"]
+# ── Async mode is configured via pyproject.toml ──────────────────────────────
 
 # ── Integration test guard ────────────────────────────────────────────────────
 INTEGRATION = os.getenv("INTEGRATION_TESTS", "0") == "1"
