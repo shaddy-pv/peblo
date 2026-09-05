@@ -348,19 +348,20 @@ export const ShowDetailPage: React.FC = () => {
           isOpen={true}
           onClose={() => setActivePlay(null)}
           showTitle={show.title}
-          itemTitle={activePlay.item.title}
-          itemType={activePlay.itemType}
-          episodeNumber={activePlay.item.episode_number}
+          showSlug={show.slug}
+          item={activePlay.item}
           seasonNumber={activePlay.seasonNumber}
-          durationSeconds={activePlay.item.duration_seconds}
-          contentGroup={activePlay.item.content_group}
-          availableLanguages={activePlay.item.languages.map((l) => ({
-            language: l.language,
-            title: l.title,
-            duration_seconds: l.duration_seconds,
-          }))}
+          allSeasonEpisodes={activePlay.itemType === 'trailer' ? show.trailers : currentSeason?.episodes}
+          trailers={show.trailers}
           initialLanguage={activePlay.language}
-          thumbnailUrl={activePlay.item.artwork.thumbnail}
+          onSelectEpisode={(ep, lang) =>
+            setActivePlay({
+              item: ep,
+              itemType: 'episode',
+              language: lang,
+              seasonNumber: currentSeason?.season_number ?? 1,
+            })
+          }
         />
       )}
     </div>

@@ -6,6 +6,7 @@ import { Footer } from './components/layout/Footer';
 import { HomePage } from './pages/HomePage';
 import { SearchPage } from './pages/SearchPage';
 import { ShowDetailPage } from './pages/ShowDetailPage';
+import { WatchPage } from './pages/WatchPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
 // Configure TanStack Query client with generous cache time for public catalogue
@@ -31,6 +32,7 @@ export const App: React.FC = () => {
               <Route path="/" element={<HomePage />} />
               <Route path="/search" element={<SearchPage />} />
               <Route path="/show/:slug" element={<ShowDetailPage />} />
+              <Route path="/watch/:contentGroup" element={<WatchPage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </main>
