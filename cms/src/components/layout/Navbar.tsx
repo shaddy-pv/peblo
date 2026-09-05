@@ -44,6 +44,29 @@ export const Navbar: React.FC = () => {
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        <a
+          href="http://localhost:3001"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.4rem',
+            padding: '0.35rem 0.75rem',
+            borderRadius: 'var(--radius-sm)',
+            fontSize: '0.78rem',
+            fontWeight: 600,
+            background: 'rgba(99, 102, 241, 0.15)',
+            color: '#a5b4fc',
+            border: '1px solid rgba(99, 102, 241, 0.3)',
+            transition: 'all 0.15s ease',
+          }}
+          title="Open Public Viewer OTT App"
+        >
+          <span>📺</span>
+          <span>Live OTT App ↗</span>
+        </a>
+
         <div
           style={{
             display: 'flex',

@@ -61,9 +61,9 @@ export const Navbar: React.FC = () => {
           <span style={{ display: 'inline' }}>Search</span>
         </Link>
 
-        {/* CMS Link for easy pair-testing */}
+        {/* CMS Link for easy cross-navigation */}
         <a
-          href="http://localhost:5173"
+          href="http://localhost:3000"
           target="_blank"
           rel="noopener noreferrer"
           className="btn btn-glass btn-sm"
