@@ -26,12 +26,12 @@ This document tracks the complete 24-phase implementation roadmap for the **Pebl
 | **Phase 15** | Viewer Search & Filter Experience | Viewer Frontend | ✅ Completed | `9c5daf5` |
 | **Phase 16** | Viewer Show Details (Language Selector, Trailers, Seasons) | Viewer Frontend | ✅ Completed | `471dd1c` |
 | **Phase 17** | Player Experience (Graceful Stub / Embed) | Viewer Frontend | ✅ Completed | `341534e` |
-| **Phase 18** | UI/UX Polish (Accessibility, Animations, Loading Skeletons) | Full Stack UI | ⏳ Next | — |
-| **Phase 19** | End-to-End Testing & Quality Assurance | QA / Testing | ⏳ Upcoming | — |
-| **Phase 20** | Docker Compose & CI Pipeline Finalization | DevOps / Docker | ⏳ Upcoming | — |
-| **Phase 21** | Production Readiness (Security, Alerting, Secrets) | Operability | ⏳ Upcoming | — |
-| **Phase 22** | Final Assessment Audit vs Spec | Audit / Verification | ⏳ Upcoming | — |
-| **Phase 23** | README & Submission Documentation | Documentation | ⏳ Upcoming | — |
+| **Phase 18** | UI/UX Polish (Accessibility, Animations, Loading Skeletons) | Full Stack UI | ✅ Completed | `11c5a00` |
+| **Phase 19** | End-to-End Testing & Quality Assurance | QA / Testing | ✅ Completed | `01d4d4e` |
+| **Phase 20** | Docker Compose & CI Pipeline Finalization | DevOps / Docker | ✅ Completed | `200fdf9` |
+| **Phase 21** | Production Readiness (Security, Alerting, Secrets) | Operability | ✅ Completed | `1d302fe` |
+| **Phase 22** | Final Assessment Audit vs Spec | Audit / Verification | ✅ Completed | `3cbb88a` |
+| **Phase 23** | README & Submission Documentation | Documentation | ✅ Completed | HEAD |
 
 ---
 
@@ -116,19 +116,25 @@ This document tracks the complete 24-phase implementation roadmap for the **Pebl
 - **Status**: Completed (`341534e`).
 
 ### PHASE 18 — UX POLISH
-- **Scope**: Mobile responsiveness across breakpoints (360px–1920px), playful child-friendly typography and soft gradients, keyboard accessibility, loading skeletons, image error fallbacks.
+- **Scope**: Mobile responsiveness across breakpoints (360px–1920px), playful child-friendly typography and soft gradients, keyboard accessibility with glowing focus-visible rings, touch targets (>= 44px), loading skeletons, and cross-application navigation links between CMS and Viewer.
+- **Status**: Completed (`11c5a00`).
 
 ### PHASE 19 — TESTING & QUALITY
-- **Scope**: End-to-end test verification across backend (pytest unit + integration) and frontend (TypeScript typecheck, lint, Vite build).
+- **Scope**: End-to-end test verification across backend (pytest unit + integration, 102/102 passing) and frontend (TypeScript typecheck, 0 oxlint errors/warnings, clean Vite builds).
+- **Status**: Completed (`01d4d4e`).
 
 ### PHASE 20 — DOCKER & CI
-- **Scope**: Verify single-command `docker-compose up` orchestrating PostgreSQL, backend, CMS, and Viewer seeded and running; finalize GitHub Actions CI workflow.
+- **Scope**: Single-command `docker-compose up` orchestrating PostgreSQL, Alembic migrations, database seeder, FastAPI backend, CMS, and Viewer seeded and running; GitHub Actions CI workflow with ruff lint, pytest, and Docker Buildx image builds.
+- **Status**: Completed (`200fdf9`).
 
 ### PHASE 21 — PRODUCTION READINESS
-- **Scope**: Audit environment variables, secret management documentation, production health checks, database indexes, and Cloudflare R2 deployment steps.
+- **Scope**: Production readiness guide (`docs/production_readiness.md`), environment variable documentation (`.env.example` & `backend/.env.example`), secret management strategy, health check and alerting policies, and Cloudflare R2 migration playbook.
+- **Status**: Completed (`1d302fe`).
 
 ### PHASE 22 — FINAL AUDIT
-- **Scope**: Comprehensive assessment matrix verifying every single requirement from the take-home challenge specification.
+- **Scope**: Comprehensive assessment matrix (`docs/spec_audit_matrix.md`) mapping every single clause and scoring criteria from the take-home challenge specification (Parts A, B, C, D, and E) with concrete proof.
+- **Status**: Completed (`3cbb88a`).
 
 ### PHASE 23 — README & SUBMISSION
-- **Scope**: Complete README with architectural decisions, trade-offs, atomic publish crash recovery analysis, search scalability limits, AI usage disclosure, and screen recording checklist.
+- **Scope**: Master `README.md` containing quickstart, architecture diagrams, testing verification, in-depth Part E technical answers (atomic publish crash recovery, storage abstraction R2 migration, search scalability boundaries, pre-published file trade-offs, AI usage disclosure), and screen recording walkthrough checklist.
+- **Status**: Completed (HEAD).
