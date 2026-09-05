@@ -21,8 +21,8 @@ This document tracks the complete 24-phase implementation roadmap for the **Pebl
 | **Phase 10** | Internal CMS Foundation (Shell, Router, TanStack Query) | CMS Frontend | ✅ Completed | `126927d` |
 | **Phase 11** | CMS Content Management (Forms, Artwork Uploads, Lists) | CMS Frontend | ✅ Completed | `0fadf72` |
 | **Phase 12** | CMS Publish Workflow (Report, Run History, Permissions) | CMS Frontend | ✅ Completed | `9901f37` |
-| **Phase 13** | Viewer Foundation (Shell, Design System, Responsive) | Viewer Frontend | ⏳ Next | — |
-| **Phase 14** | Viewer Home (Hero Banner, Section Rows, Posters) | Viewer Frontend | ⏳ Upcoming | — |
+| **Phase 13** | Viewer Foundation (Shell, Design System, Responsive) | Viewer Frontend | ✅ Completed | `53a50c8` |
+| **Phase 14** | Viewer Home (Hero Banner, Section Rows, Posters) | Viewer Frontend | ⏳ Next | — |
 | **Phase 15** | Viewer Search & Filter Experience | Viewer Frontend | ⏳ Upcoming | — |
 | **Phase 16** | Viewer Show Details (Language Selector, Trailers, Seasons) | Viewer Frontend | ⏳ Upcoming | — |
 | **Phase 17** | Player Experience (Graceful Stub / Embed) | Viewer Frontend | ⏳ Upcoming | — |
@@ -95,6 +95,8 @@ This document tracks the complete 24-phase implementation roadmap for the **Pebl
 
 ### PHASE 13 — VIEWER FOUNDATION
 - **Scope**: Viewer React + TypeScript SPA, responsive shell, custom design tokens, TanStack Query client wired exclusively to `/catalog` endpoints (strict zero-admin-access boundary).
+- **Status**: Completed (`53a50c8`).
+
 
 ### PHASE 14 — VIEWER HOME
 - **Scope**: Netflix-style children's OTT homepage: featured hero with banner artwork, horizontal scrolling content rows grouped by section, poster artwork cards, smooth transitions, loading skeletons.
