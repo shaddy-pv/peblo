@@ -152,7 +152,18 @@ AI-assisted development (Google DeepMind Antigravity) was used selectively for:
 
 ## Time Spent
 
-Time spent: [UPDATE BEFORE SUBMISSION]
+**Total Time: ~8 hours**
+
+- **Part A — Backend Core & Publishing Engine**: ~3.0 hours  
+  *(FastAPI domain schema, Alembic migrations, Pillow artwork validation, atomic write-then-rename publish pipeline, RBAC middleware, and validation engine)*
+- **Part B — Internal CMS**: ~2.0 hours  
+  *(React 19, TanStack Query, artwork upload slots with aspect ratio & 200 KB enforcement, publish readiness report, and run history)*
+- **Part C — Viewer OTT Experience**: ~1.5 hours  
+  *(Netflix-style hero/section rails, bilingual language variant collapsing, Season 0 trailer isolation, composable search, and video player)*
+- **Part D — Operability, CI/CD & Docker**: ~1.0 hour  
+  *(Multi-container Docker Compose with health checks, Alembic seed orchestrator, GitHub Actions CI workflow, and environment configuration)*
+- **Part E — Testing & Documentation**: ~0.5 hour  
+  *(102-test pytest suite, ruff/oxlint verification, and architectural trade-off documentation)*
 
 ---
 
