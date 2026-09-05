@@ -31,7 +31,7 @@ This document tracks the complete 24-phase implementation roadmap for the **Pebl
 | **Phase 20** | Docker Compose & CI Pipeline Finalization | DevOps / Docker | ✅ Completed | `200fdf9` |
 | **Phase 21** | Production Readiness (Security, Alerting, Secrets) | Operability | ✅ Completed | `1d302fe` |
 | **Phase 22** | Final Assessment Audit vs Spec | Audit / Verification | ✅ Completed | `3cbb88a` |
-| **Phase 23** | README & Submission Documentation | Documentation | ✅ Completed | HEAD |
+| **Phase 23** | README & Submission Documentation | Documentation | ✅ Completed | `c704628` |
 
 ---
 
@@ -137,4 +137,4 @@ This document tracks the complete 24-phase implementation roadmap for the **Pebl
 
 ### PHASE 23 — README & SUBMISSION
 - **Scope**: Master `README.md` containing quickstart, architecture diagrams, testing verification, in-depth Part E technical answers (atomic publish crash recovery, storage abstraction R2 migration, search scalability boundaries, pre-published file trade-offs, AI usage disclosure), and screen recording walkthrough checklist.
-- **Status**: Completed (HEAD).
+- **Status**: Completed (`c704628`).
